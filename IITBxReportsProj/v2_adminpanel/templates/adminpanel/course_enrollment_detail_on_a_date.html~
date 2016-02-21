@@ -1,0 +1,11 @@
+ {% load staticfiles %}
+ <img id="page_loader" src="{% static "adminpanel/images/image6.gif" %}"  style="display: none; margin: 0 auto;">
+<p> Per Day Course Enrollment Details</p>
+<div id="course_details_div" style="height:600px;">
+ {% load staticfiles %}
+ <img id="page_loader_1" src="{% static "adminpanel/images/image6.gif" %}"  style="display: none; margin: 0 auto;">
+</div><br>
+<div id="student_details_div">
+ {% load staticfiles %}
+ <img id="page_loader_2" src="{% static "adminpanel/images/image6.gif" %}"  style="display: none; margin: 0 auto;">
+</div>

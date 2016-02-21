@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+{% load staticfiles %}
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Genderwise Distribution of Students</title>
+	
+    <link rel="stylesheet" type="text/css" href="{% static "bootstrap/css/bootstrap.min.css"  %}"/>
+    <link rel="stylesheet" type="text/css" href="{% static "font-awesome/css/font-awesome.min.css" %}" />
+    <link rel="stylesheet" type="text/css" href="{% static "css/local.css" %}" />
+    <script type="text/javascript"  src="{% static "js/jquery-1.10.2.min.js" %}"></script>
+    <script type="text/javascript"  src="{% static "bootstrap/js/bootstrap.min.js"%}"></script>
+
+
+    <!-- you need to include the shieldui css and js assets in order for the charts to work -->
+    <link rel="stylesheet" type="text/css" href="http://www.shieldui.com/shared/components/latest/css/shieldui-all.min.css" />
+    <link rel="stylesheet" type="text/css" href="http://www.shieldui.com/shared/components/latest/css/light-bootstrap/all.min.css" />
+    <link id="gridcss" rel="stylesheet" type="text/css" href="http://www.shieldui.com/shared/components/latest/css/dark-bootstrap/all.min.css" />
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js"></script>
+<script src="http://code.highcharts.com/highcharts.js"></script>
+<script src="http://code.highcharts.com/modules/exporting.js"></script>
+<script src="http://code.highcharts.com/modules/data.js"></script>
+</head>
+<body>
+
+    <div id="wrapper">
+          <nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-ex1-collapse">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="{% url 'index'  %}">Social Sector Panel</a>
+            </div>
+
+            <div class="collapse navbar-collapse navbar-ex1-collapse">
+                <ul id="active" class="nav navbar-nav side-nav">
+                    <li class="selected"><a href="{% url 'index'  %}"><i class="fa fa-bullseye"></i> Dashboard</a></li>
+		    <li class="selected"><a href="{% url 'education'  %}"><i class="fa fa-bullseye"></i> Level of Education</a></li>
+		    <li class="selected"><a href="{% url 'age'  %}"><i class="fa fa-bullseye"></i> Agewise</a></li>
+		    <li class="selected"><a href="{% url 'gender'  %}"><i class="fa fa-bullseye"></i> Genderwise</a></li>
+ 		    <li class="selected"><a href="{% url 'state'  %}"><i class="fa fa-bullseye"></i> Statewise</a></li>
+                </ul>
+
+              
+            </div>
+        </nav>
+        <div id="page-wrapper">
+	<div class="row">
+                <div class="col-lg-6">
+                    <div class="panel panel-primary">
+                        <div class="panel-heading">
+                            <h3 class="panel-title"><i class="fa fa-bar-chart-o"></i> Subjectwise Student Count </h3>
+                        </div>
+                        <div class="panel-body" style="	height:450px;overflow-x:hidden;">
+                            <div id="shieldui-chart2"></div><!--redirect high chart link from here-->
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-6">
+                    <div class="panel panel-primary">
+                        <div class="panel-heading">
+                            <h3 class="panel-title"><i class="fa fa-bar-chart-o"></i>Subjectwise Course List </h3>
+                        </div>
+                        <div class="panel-body" style="	height:450px;overflow-y:scroll;overflow-x:hidden;">
+                            <div id="shieldui-chart3">
+                            <select id="subject" onchange="myFunction()">
+					 {% for subject in subject_list %}
+						 <option value="{{subject}}" onchange="showCourseList()">{{subject}}
+					{% endfor %}
+					</select><br><br>
+					<table id="course_list" border=1 style="width:450px;">
+					<tr>
+					
+					</tr>
+					</table>
+                            </div><!--redirect high chart link from here-->
+                        </div>
+                    </div>
+                </div>
+            </div>
+       </div>
+   </div>
+</body>
+
+<script>//genderwise
+var obj5 = {{ subwise_student_count|safe }};
+var subwise_student_count = new Array();
+var i=0;
+for(var key in obj5)
+{
+subwise_student_count[i]=new Array();
+subwise_student_count[i][0]=key;
+subwise_student_count[i][1]=obj5[key];
+i++;
+}
+$(function () {
+
+    // Make monochrome colors and set them as default for all pies
+    Highcharts.getOptions().plotOptions.pie.colors = (function () {
+        var colors = [],
+            base = Highcharts.getOptions().colors[0],
+            i;
+
+        for (i = 0; i < 10; i += 1) {
+            // Start out with a darkened base color (negative brighten), and end
+            // up with a much brighter color
+            colors.push(Highcharts.Color(base).brighten((i - 3) / 7).get());
+        }
+        return colors;
+    }());
+
+    // Build the chart
+    $('#shieldui-chart2').highcharts({
+        chart: {
+            plotBackgroundColor: null,
+            plotBorderWidth: null,
+            plotShadow: false
+        },
+        title: {
+            text: 'Subjectwise Student Count'
+        },
+        tooltip: {
+            pointFormat: '{series.name}: <b>{point.y}</b>({point.percentage:.1f}%)'
+        },
+        plotOptions: {
+            pie: {
+                allowPointSelect: true,
+                cursor: 'pointer',
+                dataLabels: {
+                    enabled: true,
+                    format: '<b>{point.name}</b>: {point.y}',
+                    style: {
+                        color: (Highcharts.theme && Highcharts.theme.contrastTextColor) || 'black'
+                    }
+                }
+            }
+        },
+        series: [{
+            type: 'pie',
+            name:'Number of students',
+            data:subwise_student_count
+        }]
+    });
+});
+
+</script>
+<script>
+var subwise_courses_list={{subwise_courses_list|safe}};
+var subject_list={{subject_list|safe}};
+var first_subject=subject_list[0];
+var x="<th>S.No</th><th>Course Name</th>";
+count=1;
+for(i=0;i<subwise_courses_list.length;i++)
+    	{
+    	if(first_subject==subwise_courses_list[i][0])
+    		{
+    		x=x+"<tr><td>"+count+"</td><td>"+subwise_courses_list[i][2]+"</td></tr>";count=count+1;
+    		}
+    	}
+document.getElementById("course_list").innerHTML=x;
+function myFunction() {
+    var selected_subject = document.getElementById("subject").value;
+    var x="<th>S.No</th><th>Course Name</th>";
+    count=1;
+    for(i=0;i<subwise_courses_list.length;i++)
+    	{
+    	if(selected_subject==subwise_courses_list[i][0])
+    		{
+    		x=x+"<tr><td>"+count+"</td><td>"+subwise_courses_list[i][2]+"</td></tr>";count=count+1;
+    		}
+    	}
+    document.getElementById("course_list").innerHTML=x;
+}
+</script>
+
+<script>//theme for Charts
+/**
+ * Dark theme for Highcharts JS
+ * @author Torstein Honsi
+ */
+
+// Load the fonts
+Highcharts.createElement('link', {
+   href: '//fonts.googleapis.com/css?family=Unica+One',
+   rel: 'stylesheet',
+   type: 'text/css'
+}, null, document.getElementsByTagName('head')[0]);
+
+Highcharts.theme = {
+   colors: ["#3399FF", "#90ee7e", "#f45b5b", "#7798BF", "#aaeeee", "#ff0066", "#eeaaee",
+      "#55BF3B", "#DF5353", "#7798BF", "#aaeeee"],
+   chart: {
+      backgroundColor: {
+         linearGradient: { x1: 0, y1: 0, x2: 1, y2: 1 },
+         stops: [
+            [0, '#2a2a2b'],
+            [1, '#3e3e40']
+         ]
+      },
+      
+      plotBorderColor: '#606063'
+   },
+   title: {
+      style: {
+         color: '#E0E0E3',
+         textTransform: 'uppercase',
+         fontSize: '20px'
+      }
+   },
+   subtitle: {
+      style: {
+         color: '#E0E0E3',
+         textTransform: 'uppercase'
+      }
+   },
+   xAxis: {
+      gridLineColor: '#707073',
+      labels: {
+         style: {
+            color: '#E0E0E3'
+         }
+      },
+      lineColor: '#707073',
+      minorGridLineColor: '#505053',
+      tickColor: '#707073',
+      title: {
+         style: {
+            color: '#A0A0A3'
+
+         }
+      }
+   },
+   yAxis: {
+      gridLineColor: '#707073',
+      labels: {
+         style: {
+            color: '#E0E0E3'
+         }
+      },
+      lineColor: '#707073',
+      minorGridLineColor: '#505053',
+      tickColor: '#707073',
+      tickWidth: 1,
+      title: {
+         style: {
+            color: '#A0A0A3'
+         }
+      }
+   },
+   tooltip: {
+      backgroundColor: 'rgba(0, 0, 0, 0.85)',
+      style: {
+         color: '#F0F0F0'
+      }
+   },
+   plotOptions: {
+      series: {
+         dataLabels: {
+            color: '#B0B0B3'
+         },
+         marker: {
+            lineColor: '#333'
+         }
+      },
+      boxplot: {
+         fillColor: '#505053'
+      },
+      candlestick: {
+         lineColor: 'white'
+      },
+      errorbar: {
+         color: 'white'
+      }
+   },
+   legend: {
+      itemStyle: {
+         color: '#E0E0E3'
+      },
+      itemHoverStyle: {
+         color: '#FFF'
+      },
+      itemHiddenStyle: {
+         color: '#606063'
+      }
+   },
+   credits: {
+      style: {
+         color: '#666'
+      }
+   },
+   labels: {
+      style: {
+         color: '#707073'
+      }
+   },
+
+   drilldown: {
+      activeAxisLabelStyle: {
+         color: '#F0F0F3'
+      },
+      activeDataLabelStyle: {
+         color: '#F0F0F3'
+      }
+   },
+
+   navigation: {
+      buttonOptions: {
+         symbolStroke: '#DDDDDD',
+         theme: {
+            fill: '#505053'
+         }
+      }
+   },
+
+   // scroll charts
+   rangeSelector: {
+      buttonTheme: {
+         fill: '#505053',
+         stroke: '#000000',
+         style: {
+            color: '#CCC'
+         },
+         states: {
+            hover: {
+               fill: '#707073',
+               stroke: '#000000',
+               style: {
+                  color: 'white'
+               }
+            },
+            select: {
+               fill: '#000003',
+               stroke: '#000000',
+               style: {
+                  color: 'white'
+               }
+            }
+         }
+      },
+      inputBoxBorderColor: '#505053',
+      inputStyle: {
+         backgroundColor: '#333',
+         color: 'silver'
+      },
+      labelStyle: {
+         color: 'silver'
+      }
+   },
+
+   navigator: {
+      handles: {
+         backgroundColor: '#666',
+         borderColor: '#AAA'
+      },
+      outlineColor: '#CCC',
+      maskFill: 'rgba(255,255,255,0.1)',
+      series: {
+         color: '#7798BF',
+         lineColor: '#A6C7ED'
+      },
+      xAxis: {
+         gridLineColor: '#505053'
+      }
+   },
+
+   scrollbar: {
+      barBackgroundColor: '#808083',
+      barBorderColor: '#808083',
+      buttonArrowColor: '#CCC',
+      buttonBackgroundColor: '#606063',
+      buttonBorderColor: '#606063',
+      rifleColor: '#FFF',
+      trackBackgroundColor: '#404043',
+      trackBorderColor: '#404043'
+   },
+
+   // special colors for some of the
+   legendBackgroundColor: 'rgba(0, 0, 0, 0.5)',
+   background2: '#505053',
+   dataLabelsColor: '#B0B0B3',
+   textColor: '#C0C0C0',
+   contrastTextColor: '#F0F0F3',
+   maskColor: 'rgba(255,255,255,0.3)'
+};
+
+// Apply the theme
+Highcharts.setOptions(Highcharts.theme);
+</script>
+</html>
+

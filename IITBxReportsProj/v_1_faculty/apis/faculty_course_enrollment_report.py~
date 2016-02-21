@@ -1,0 +1,61 @@
+#IMPORTING  
+
+from inputs import DatabaseConfig  
+import json
+import pymongo
+import MySQLdb
+from pymongo import MongoClient
+
+
+'''
+Description : this method calculates the number of enrollemnts of current running courses  for a faculty
+
+INPUT PARAMETERS :
+faculty_id : user_id of the faculty
+
+OUTPUT PARAMETERS :
+faculty_courses : a list of dictionaries in the following format
+faculty_course=[{'course_id':'IITBX/CS356/2015_T1','no_of_students':10},
+		{'course_id':'IITBX/CS356/2015_T2','no_of_students':4},]
+Each entry is a dictionary having two key,value pairs 
+course_id : Course id of a particular course of a faculty    
+no_of_students : Number of enrollments for a particular course
+
+Author : Dileep Kumar Dora
+Date of Created : 20/06/2015
+
+'''
+	
+def get_courses_faculty(faculty_id):
+	try:
+		#making connection to database
+		db = MySQLdb.connect(DatabaseConfig.MYSQL_HOST,DatabaseConfig.MYSQL_USER,DatabaseConfig.MYSQL_PWD,DatabaseConfig.MYSQL_DB )
+	except:
+		print "Unable to connect to  the MYSQL database"
+	try:	
+		cursor = db.cursor()
+		# query string that is to be executed
+		query = "select b.course_id,count(*) no_of_students from student_courseenrollment a inner join student_courseaccessrole b on a.course_id=b.course_id where b.user_id= "+ faculty_id +" and b.role='instructor' group by b.course_id"
+   		cursor.execute(query) # executing query
+	except:
+		print "Unable to execute MYSQL query"
+		db.close()
+	try:
+		cursor.fetchall()    #fetching result from query output
+		db.close() #closing databse connection
+	except:
+		print "Unable to fetch data"
+		db.close()
+	try:
+		faculty_courses=[]       # list of dictionaries to be returned
+		#making list of dictionaries 
+		columns=tuple([d[0] for d in cursor.description])
+		for row in cursor:
+			 faculty_courses.append(dict(zip(columns, row)))
+		
+	except:
+		print "Unable to Dump to json object"
+	try:
+		return faculty_courses #returning the result
+	except:
+		print "Unable to return"

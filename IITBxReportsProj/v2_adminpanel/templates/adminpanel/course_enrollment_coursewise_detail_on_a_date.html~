@@ -1,0 +1,76 @@
+ {% load staticfiles %}
+ <img id="page_loader_1" src="{% static "adminpanel/images/image6.gif" %}"  style="display: none; margin: 0 auto;">
+<div class="row">
+                <div class="col-lg-12">
+                    <div class="panel panel-primary">
+                        <div class="panel-heading">
+                            <h3 class="panel-title"> Coursewise Detail on</h3>
+			    <h3 id='date1'> {{ date }}</h3>
+                        </div>
+                        <div class="panel-body" style="background-color:#424242">
+				<span class="label form-inline" style="font-size:70%;color:#BDBDBD">Page Number:</span>
+				<span id="page_number1" class="label form-inline" style="font-size:80%;color:#BDBDBD">{{ page_no }}</span>
+				<span class="label form-inline" style="font-size:70%;color:#BDBDBD">of</span>
+				<span id= "last_page1" class="label form-inline" style="font-size:70%;color:#BDBDBD">{{ max_page }}</span>
+				<a style="position: relative;left:40px" href="#" onclick="course_date_body_previous();return false" >previous</a> 
+				<a style="position: relative;left:80px" href="#" onclick="course_date_body_next();return false">next</a> 
+ 				<div style="width:20%;float:right">
+  		 			<form class="form-inline " role="form">
+	 				<div class="form-group" style="float:right">
+ 	     					<input class="form-control input-sm" style="width:80px"  id="focusedInput1" type="number">
+ 	    					<button id="gotobutton" type="button" class="btn btn-primary btn-sm"  style="width:40px" onclick="course_date_body_goto();return false">Goto</button>
+	   				</div>
+ 				</div>
+				<div class="row form-inline"style="float:right;font-size:80%">
+				<div class="btn-group" style="font-size:80%;">
+  				<button class="btn btn-xs btn-primary dropdown-toggle" id="entries" data-toggle="dropdown">Entries<span class="caret"></span></button>
+  				<ul class="dropdown-menu" id="entries">
+    					<li><a href="#" id="action-10" onclick="set_course_date_rows_per_page(10);return false">10</a></li>
+    					<li><a href="#" id="action-20" onclick="set_course_date_rows_per_page(20);return false">20</a></li>
+    					<li><a href="#" id="action-50" onclick="set_course_date_rows_per_page(50);return false">50</a></li>
+   					<li><a href="#" id="action-100" onclick="set_course_date_rows_per_page(100);return false">100</a></li>
+    					<li><a href="#" id="action-150" onclick="set_course_date_rows_per_page(150);return false">150</a></li>
+    					<li><a href="#" id="action-200" onclick="set_course_date_rows_per_page(200);return false">200</a></li>
+  				</ul>
+			</div>
+<label>Per Page</label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<label style="posirion:relative;right:10px" id="rows_per_page1">{{records_per_page}}</label>
+</div>
+
+<br><br>
+                            <div class="sui-grid sui-grid-core" id="shieldui-grid1">
+				<div class="sui-gridheader" >
+					<table class="sui-table"><colgroup><col style=""><col></colgroup>
+					<thead style="font-size:85%">
+						<tr class="sui-columnheader">
+						<th class="sui-headercell" ><a href="#" class="sui-link">Course ID</a></th>
+						<th class="sui-headercell" ><a href="#" class="sui-link"> Number of Enrollments</a></th>					
+						</tr>
+					</thead>
+					<tbody class="sui-hide"><tr><td></td><td></td></tr></tbody>
+					</table>
+				</div>
+				<div class="sui-gridcontent" style="height:200px;overflow-y:scroll;overflow-x:hidden;">
+				<table class="sui-table"><colgroup><col style=""><col></colgroup>
+				<tbody style="font-size:75%;>
+				{% for i in data %}
+					{% if forloop.counter|divisibleby:2 %}
+						<tr class="sui-row"><td class="sui-cell">{{ i.1 }}</td><td class="sui-cell">{{ i.0 }}</td></tr>
+					{% else %}
+						<tr class="sui-alt-row"><td class="sui-cell">{{ i.1 }}</td><td class="sui-cell">{{ i.0 }}</td></tr>
+					{% endif %}
+				{% endfor %}
+				</tbody>
+				</table>
+				</div>
+				</div>
+				<br>
+
+	
+
+   
+    </div>
+  </div>
+  </div>
+</div>
+</div>

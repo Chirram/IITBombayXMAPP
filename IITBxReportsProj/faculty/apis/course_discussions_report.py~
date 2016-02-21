@@ -1,0 +1,34 @@
+# IMPORTING LIBRARIES
+from inputs import DatabaseConfig
+import pymongo
+import MySQLdb
+from pymongo import MongoClient
+
+# ESTABLISHING CONNECTION WITH DATABASE
+
+client = MongoClient(DatabaseConfig.MONGO_HOST, DatabaseConfig.MONGO_PORT)
+
+# SELECTING DATABASE
+discussion_db = client.cs_comments_service_development
+discussion_coll = discussion_db.contents
+
+def get_discussions_report(facultyid,courseid) :
+
+	try:    
+		result=[]
+		discussion_db = client.cs_comments_service_development
+		discussion_coll = discussion_db.contents
+		
+		discussions =  discussion_coll.find({"_type" : "CommentThread" , "thread_type" : "discussion" ,"course_id" : courseid},{"body" :1,"title" : 1})
+                
+		for i in discussions:
+			result.append([i['title'],i['body']])
+		client.close()
+		return result
+	except:
+		print "Unable to execute query : discussions"
+	
+
+	
+
+

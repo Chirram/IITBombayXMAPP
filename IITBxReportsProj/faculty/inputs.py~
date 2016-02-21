@@ -1,0 +1,7 @@
+class DatabaseConfig
+	mysql_host = "10.105.24.33"
+        mysql_user = "root"
+        mysql_pwd = "edx"
+	mysql_db = "edxapp"
+	mongo_host = "10.105.24.33"
+	mongo_port  = 27017

@@ -1,0 +1,123 @@
+{% load staticfiles %}	
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Faculty Dashboard</title>
+
+    <link rel="stylesheet" type="text/css" href="{% static "bootstrap/css/bootstrap.min.css" %}" />
+    <link rel="stylesheet" type="text/css" href="{% static "font-awesome/css/font-awesome.min.css" %}" />
+    <link rel="stylesheet" type="text/css" href="{% static "css/local.css" %}" />
+
+    <script type="text/javascript" src="{% static "js/jquery-1.10.2.min.js" %}"></script>
+    <script type="text/javascript" src="{% static "bootstrap/js/bootstrap.min.js"%}"></script>
+
+    <!-- you need to include the shieldui css and js assets in order for the charts to work -->
+   
+    <script type="text/javascript" src="http://www.shieldui.com/shared/components/latest/js/shieldui-all.min.js"></script>
+    <script type="text/javascript" src="http://www.prepbootstrap.com/Content/js/gridData.js"></script>
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js"></script>
+<script src="http://code.highcharts.com/highcharts.js"></script>
+</head>
+<body>
+
+    <div id="wrapper">
+
+          <nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-ex1-collapse">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="index.html">Faculty Panel</a>
+            </div>
+
+            <div class="collapse navbar-collapse navbar-ex1-collapse">
+                <ul id="active" class="nav navbar-nav side-nav">
+                    <li class="selected"><a href="{% url 'index' facultyid=fid %}"><i class="fa fa-globe"></i> Summary</a></li>
+                                         <li class="dropdown"><a class="dropdown-toggle" data-toggle="dropdown">
+                     <i class="fa fa-tasks"></i> Course Enrollment Report<span class="caret"></span></a>
+				<ul class="dropdown-menu">
+					<li><a href="{% url 'stuofcrs' facultyid=fid }">List of Students per course</a></li></ul></li>
+                    <li><a href=""><i class="fa fa-list-ol"></i> Grading Reports</a></li>
+                   
+             	     <li class="dropdown"><a class="dropdown-toggle" data-toggle="dropdown">
+		     <i class="fa fa-font"></i> Discussion Activity Report <span class="caret"></span></a>
+				<ul class="dropdown-menu">
+					<li><a href="{% url 'course_unanswered_questions' facultyid=fid %}">List of Unanswered Questions</a></li>
+					<li><a href="{% url 'course_discussions' facultyid=fid %}">List of Discussions</a></li>
+					<li><a href="{% url 'course_answered_questions' facultyid=fid %}">List of Answered Questions</a></li>
+				</ul>
+		     </li>
+                </ul>
+
+                <ul class="nav navbar-nav navbar-right navbar-user">
+                  
+                    <li class="dropdown user-dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-user"></i> Avinash Awate <b class="caret"></b></a>
+                        <ul class="dropdown-menu">
+                            <li><a href="#"><i class="fa fa-user"></i> Profile</a></li>
+                            <li><a href="#"><i class="fa fa-gear"></i> Settings</a></li>
+                            <li class="divider"></li>
+                            <li><a href="#"><i class="fa fa-power-off"></i> Log Out</a></li>
+
+                        </ul>
+                    </li>
+                    <li class="divider-vertical"></li>
+               
+                </ul>
+            </div>
+        </nav>
+
+        <div id="page-wrapper">
+	<div class = "alert alert-warning">
+            <div class="row">
+                <div class="col-lg-12">
+                    <h1>Discussions report  <small></small></h1>
+                   
+                </div>
+            </div>
+	    <br>
+            <div class="form-group input-group">
+            <form action = "" method = "post" >
+                            <select name ="courseid" class="form-control">
+                            {% for course in course_list %}
+                                <option value ={{course}} style="color:black">{{ course }}</option>
+                            {% endfor %}   
+                            </select>
+                            <span class="input-group-btn">
+                                <input type="submit" class="btn btn-default" value="Search">
+                            </span>
+                  </form>
+                        </div>
+                        </div>
+<hr />
+{%  for obj in data %}
+	<div class="row">
+                        <div class="col-xs-12">
+                            <h2>{{ obj.0 }}</h2>
+                            <p> {{ obj.1 }} </p>
+                            
+                        </div>
+         </div>
+	<hr />
+{% endfor %}
+       
+               
+                
+            </div>
+        
+            <div class="row">
+              
+            </div> 
+        </div>
+
+    </div>
+  
+   
+</body>
+</html>

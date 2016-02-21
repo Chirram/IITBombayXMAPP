@@ -1,0 +1,4 @@
+MYSQL_SERVER_IP="10.105.24.33"
+PASSWORD="edx"
+USER="root"
+DATABASE="edxapp"

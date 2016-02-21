@@ -1,0 +1,50 @@
+# IMPORTING LIBRARIES
+
+
+from inputs import DatabaseConfig
+import json
+import pymongo
+import MySQLdb
+from pymongo import MongoClient
+
+	
+
+# METHOD TO GENERATE REPORT : 
+def get_discussion_forum_report(userid):
+	try:   
+		# ESTABLISHING CONNECTION WITH DATABASE
+		db = MySQLdb.connect(DatabaseConfig.mysql_host,DatabaseConfig.mysql_user,DatabaseConfig.mysql_pwd,DatabaseConfig.mysql_db )
+		client = MongoClient(DatabaseConfig.mongo_host, DatabaseConfig.mongo_port)
+
+		# SELECTING DATABASE
+		discussion_db = client.cs_comments_service_development
+		discussion_coll = discussion_db.contents
+	        # EXECUTING MYSQL QUERIES
+                cursor = db.cursor()
+		query = "select course_id from student_courseaccessrole  where user_id="+ userid +" and role = 'instructor'"
+  		
+		cursor.execute(query)
+   		data=cursor.fetchall()
+                # CREATING EMPTY LIST TO STORE RESULT TO BE RETURNED TO TEMPLATE 
+		result=[]		
+		
+                # USED  FOR DEBUGGING
+                #print data
+		for element in data:
+   			   total= discussion_coll.find({"_type" : "CommentThread" , "course_id" : element[0]}).count()
+			   questions = discussion_coll.find({"_type" : "CommentThread" , "course_id" : element[0],"thread_type" : "question"}).count()
+			   discussions = discussion_coll.find({"_type" : "CommentThread" , "course_id" : element[0],"thread_type" : "discussion"}).count()
+                           unanswered_questions = discussion_coll.find({"_type" : "CommentThread" , "thread_type" : "question","comment_count" : 0 , "course_id" : element[0],}).count()
+
+           		   #APPENDING THE QUERY RESULTS TO THE RESULT LIST 
+			   result.append([element[0],total,questions,unanswered_questions,discussions]);
+                #USED FOR DEBUGGING
+                #print result
+             	       	
+	except:
+	        
+   		print "Error: Unable to fetch data"
+
+	#DB CLOSE
+	return result 
+	

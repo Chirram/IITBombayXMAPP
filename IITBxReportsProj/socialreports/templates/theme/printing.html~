@@ -1,0 +1,256 @@
+
+
+
+{% load staticfiles %}
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MIS Reports</title>
+
+    <link rel="stylesheet" type="text/css" href="{% static 'bootstrap/css/bootstrap.min.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'font-awesome/css/font-awesome.min.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'css/local.css' %}">
+
+
+    <script type="text/javascript" src="{% static 'js/jquery-1.10.2.min.js' %}"></script>
+    <script type="text/javascript" src="{% static 'bootstrap/js/bootstrap.min.js' %}"></script>
+
+    <!-- you need to include the shieldui css and js assets in order for the charts to work -->
+    <link rel="stylesheet" type="text/css" href="http://www.shieldui.com/shared/components/latest/css/shieldui-all.min.css">
+    <link rel="stylesheet" type="text/css" href="http://www.shieldui.com/shared/components/latest/css/light-bootstrap/all.min.css">
+    <link id="gridcss" rel="stylesheet" type="text/css" href="http://www.shieldui.com/shared/components/latest/css/dark-bootstrap/all.min.css">
+
+    <script type="text/javascript" src="http://www.shieldui.com/shared/components/latest/js/shieldui-all.min.js"></script>
+    <script type="text/javascript" src="http://www.prepbootstrap.com/Content/js/gridData.js"></script>
+    <script type="text/javascript" src="https://code.jquery.com/jquery-1.11.1.min.js"></script>
+    <link rel="stylesheet" href="http://code.jquery.com/qunit/qunit-1.13.0.css">
+    <script src="http://code.jquery.com/jquery-2.0.3.min.js" type="text/javascript"></script>
+    <script src="{% static 'paginator/jquery.twbsPagination.min.js' %}" type="text/javascript"></script>
+
+</head>
+<body>
+    <div id="wrapper">
+
+      <nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-ex1-collapse">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="index.html">Faculty Panel</a>
+        </div>
+
+        <div class="collapse navbar-collapse navbar-ex1-collapse">
+            <ul id="active" class="nav navbar-nav side-nav">
+                <li class="selected"><a href="http://10.105.24.33:9876/mis/stuofcrs/{{ fac_id }}"><i class="fa fa-bullseye"></i> Dashboard </a></li>
+                <li class="dropdown"><a class="dropdown-toggle" data-toggle="dropdown" href="#"> <i class="fa fa-table"></i> Lists Reports     <span class="caret"></span></a>
+                    <ul class="dropdown-menu"><li><a href="http://10.105.24.33:9876/mis/stuofcrs/{{ fac_id }}">Course's Student List</a></li><li><a href="http://10.105.24.33:9876/mis/stuofsub/{{ fac_id }}">Subject's Student List</a></li><li><a href="http://10.105.24.33:9876/mis/certificate_data/{{ fac_id }}">Certificate Data</a></li><li><a href="http://10.105.24.33:9876/mis/crsofsub/{{ fac_id }}">Courses List</a></li></ul></li></ul></li></ul>
+
+                    <ul class="nav navbar-nav navbar-right navbar-user">
+                        <li class="dropdown messages-dropdown">
+                            
+                            <ul class="dropdown-menu">
+                                <li class="dropdown-header">2 New Messages</li>
+                                <li class="message-preview">
+                                    <a href="#">
+                                        <span class="avatar"><i class="fa fa-bell"></i></span>
+                                        <span class="message">Security alert</span>
+                                    </a>
+                                </li>
+                                <li class="divider"></li>
+                                <li class="message-preview">
+                                    <a href="#">
+                                        <span class="avatar"><i class="fa fa-bell"></i></span>
+                                        <span class="message">Security alert</span>
+                                    </a>
+                                </li>
+                                <li class="divider"></li>
+                                <li><a href="#">Go to Inbox <span class="badge">2</span></a></li>
+                            </ul>
+                        </li>
+                        <li class="dropdown user-dropdown">
+                            <a aria-expanded="false" href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-user"></i> Zubaeyr<b class="caret"></b></a>
+                            <ul class="dropdown-menu">
+                                <li><a href="#"><i class="fa fa-user"></i> Profile</a></li>
+                                <li><a href="#"><i class="fa fa-gear"></i> Settings</a></li>
+                                <li class="divider"></li>
+                                <li><a href="#"><i class="fa fa-power-off"></i> Log Out</a></li>
+
+                            </ul>
+                        </li>
+                        <li class="divider-vertical"></li>
+                        <li>
+                            <form class="navbar-search">
+                                <input placeholder="Search" class="form-control" type="text">
+                            </form>
+                        </li>
+                    </ul>
+                </div>
+            </nav>
+
+            <div id="page-wrapper">
+
+                <div class="row">
+                    <div class="col-lg-12">
+                        <h1>Courses List - <small>For a specific subject</small></h1>
+                        <div class="alert alert-warning">
+                            <h5><label>Select a Subject</label></h5>
+                            <div class="row">
+                                <div class="col-lg-6">
+                                 <div class="form-group">
+                                    <select class="form-control" id="dropdown_menu" >
+                                        {% for i in sublist %}
+                                        <option>{{ i.0 }}</option>
+                                        {% endfor %}      
+                                    </select>
+                                </div>
+                            </div>
+                            <button type="button" class="btn btn-primary " id="showlist">Show List</button> 
+                            <br><br>    
+                        </div>                         
+                    </div>
+                </div>
+            </div>
+
+            
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="panel panel-primary">
+                        <div class="panel-heading">
+                            <h3 class="panel-title"> Courses of {{ Sub_Name }}</h3>
+                        </div>
+                        <div class="panel-body" style="background-color:#424242">
+
+                            <span class="label form-inline" style="font-size:80%;color:#BDBDBD"> {{ total_records }} Records Found</span>
+                            <div class="row form-inline"style="float:right;font-size:80%">
+                                <div class="btn-group" style="font-size:80%;">
+                                  <button class="btn btn-xs btn-primary dropdown-toggle" id="entries" data-toggle="dropdown">Entries<span class="caret">10</span></button>
+                                  <ul class="dropdown-menu" id="entries">
+                                    <li><a href="#" selected id="action-10">10</a></li>
+                                    <li><a href="#" id="action-20">20</a></li>
+                                    <li><a href="#" id="action-50">50</a></li>
+                                    <li><a href="#" id="action-100">100</a></li>
+                                    <li><a href="#" id="action-150">150</a></li>
+                                    <li><a href="#" id="action-200">200</a></li>
+                                </ul>
+                            </div>
+                            <label>Per Page</label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                        </div>
+
+                        <br><br>
+                        <div class="sui-grid sui-grid-core" id="shieldui-grid1">
+                            <div class="sui-gridheader">
+                                <table class="sui-table"><colgroup><col "><col></colgroup>
+                                    <thead style="font-size:85%">
+                                        <tr class="sui-columnheader">
+                                            <th class="sui-headercell" data-field="Course_ID"><a href="#" class="sui-link">Course ID</a></th>
+                                            <th class="sui-headercell" data-field="Coursename"><a href="#" class="sui-link">Course Name </a></th>
+
+                                        </tr>
+                                    </thead>
+                                    <tbody class="sui-hide"><tr><td></td><td></td></tr></tbody>
+                                </table>
+                            </div>
+                            <div class="sui-gridcontent">
+                                <table class="sui-table"><colgroup><col "><col></colgroup>
+                                    <tbody style="font-size:75%">
+                                        {% for i in data %}
+                                        {% if forloop.counter|divisibleby:2 %}
+                                        <tr class="sui-row"><td class="sui-cell">{{ i.0 }}</td><td class="sui-cell">{{ i.1 }}</td></tr>
+                                        {% else %}
+                                        <tr class="sui-alt-row"><td class="sui-cell">{{ i.0 }}</td><td class="sui-cell">{{ i.1 }}</td></tr>
+                                        {% endif %}
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        <br>
+                        <br>
+                        <span class="label form-inline" style="font-size:70%;color:#BDBDBD">Total Number Of Pages : {{ total_pages }}</span>
+
+                        <div class="row form-inline" style="width:100%;">
+                            <div class="form-inline" style="width:80%;float:left;">
+                                &nbsp;&nbsp;&nbsp;
+                                <ul id="pagination-demo" class="pagination-sm" ></ul>
+                                <div >  
+                                </div>
+                            </div>
+
+                            <div style="width:20%;float:right">
+                                <form class="form-inline " role="form"><br>
+                                   <div class="form-group" style="float:right">
+                                    <input class="form-control input-sm" style="width:40px"  id="focusedInput" type="text">
+                                    <button type="button" class="btn btn-primary btn-sm" id="goto" style="width:40px">Goto</button>
+                                </div>
+                            </div>
+
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            
+        </div>
+    </div>
+</div>
+</div>
+</div>
+</div>
+<div style="left: 266px; top: 802px; z-index: 2; display: none;" class="sui-loading-panel"><span class="sui-loading-image"></span><span class="sui-loading-back"></span></div>
+<div style="left: 266px; top: 311px; z-index: 3; display: none;" class="sui-loading-panel"><span class="sui-loading-image"></span><span class="sui-loading-back"></span></div>
+<div style="left: 266px; top: 311px; z-index: 4; display: none;" class="sui-loading-panel"><span class="sui-loading-image"></span><span class="sui-loading-back"></span></div>
+<div style="left: 266px; top: 311px; z-index: 5; display: none;" class="sui-loading-panel"><span class="sui-loading-image"></span><span class="sui-loading-back"></span></div></body>
+
+
+
+
+
+<script>
+document.getElementById('showlist').onclick = function() {
+    var obj = document.getElementById("dropdown_menu");
+    var sub = obj.options[obj.selectedIndex].text;
+    window.location="http://10.105.24.33:9876/mis/crsofsub/"+{{ fac_id }}+"/"+sub+"/1/10"; 
+};
+
+$('#pagination-demo').twbsPagination({
+    totalPages: {{ total_pages }},
+    visiblePages: 7,
+    startPage:{{ page_no }},
+    onPageClick: function (event, page) {
+        var loc="http://10.105.24.33:9876/mis/crsofsub/{{ fac_id }}/{{ Sub_Name }}/"+page.toString()+"/"+$('#entries').text();
+        $(location).attr('href',loc);
+    }
+});
+
+$("#goto").click(function(){
+    var pg=$("#focusedInput").val();
+    var total_pg={{ total_pages }};
+    
+    if((pg<=total_pg) && (pg>=0)){
+        var loc="http://10.105.24.33:9876/mis/crsofsub/{{ fac_id }}/{{ Sub_Name }}/"+pg.toString()+"/"+$('#entries').text();
+        $(location).attr('href',loc);       
+    }
+    else{
+        alert("Please enter the correct page number");
+    }
+
+});
+
+$(".dropdown-menu li a").parents('.btn-group').find('.dropdown-toggle').html({{ no_of_entries }}+'<span class="caret"></span>');
+
+$(".dropdown-menu li a").click(function(){
+  var entries = $(this).text();
+  window.location="http://10.105.24.33:9876/mis/crsofsub/"+{{ fac_id }}+"/{{ Sub_Name }}/"+{{ page_no }}+"/"+entries;
+});
+
+$("#focusedInput").keyup(function(event){
+    if(event.keyCode == 13){
+        $("#goto").click();
+    }
+});
+
+</script>

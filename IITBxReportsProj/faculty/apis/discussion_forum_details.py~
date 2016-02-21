@@ -1,0 +1,19 @@
+
+def get_unanswered_questions_report(facultyid) :
+
+	try:    
+		result=[]
+		discussion_db = client.cs_comments_service_development
+		discussion_coll = discussion_db.contents
+		unans_ques = discussion_coll.find({"_type" : "CommentThread" , "thread_type" : "question" , "comment_count" : 0} , {"body" : 1,"title" : 1})
+		for i in unans_ques:
+			result.append([i['title'],i['body']])
+		print result			
+		return result
+	except:
+		print "Unable to execute query"
+	
+
+	
+
+

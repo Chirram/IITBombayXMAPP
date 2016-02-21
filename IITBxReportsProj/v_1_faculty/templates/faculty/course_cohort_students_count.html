@@ -1,0 +1,427 @@
+{% load staticfiles %}
+	
+<!DOCTYPE html>
+<html lang="en">
+<head>
+{%  include 'faculty/includes/top.html' %}	
+</head>	
+	
+<!--  The following is source code for highcharats edit if you know the code correctly only-->
+<script>
+var data={{cohort_details|safe}}
+alert(data[2]);
+$(function () {
+    $('#cohortstudentchart').highcharts({
+       
+       chart: {
+       backgroundColor : "#232123",
+       },
+        title: {
+            text: 'No of cohorts per course',
+            x: 0 
+        },
+        xAxis: {
+            categories: data[0],
+
+        },
+        yAxis: {
+            title: {
+                text: 'cohorts'
+            }, 
+            plotLines: [{
+                value: 0,
+                width: 1,
+                color: '#808080'
+            }],
+	
+
+             
+        },
+	plotOptions: {
+		    		    series: {
+       			 cursor: 'pointer',
+        			point: {
+            			events: {
+               				 click: function () {
+               				 //alert(this.category);
+               				 var cohort_index=data[0].indexOf(this.category);
+               				 var cohort_group_id=data[2][cohort_index];
+               				 window.location="{% url 'cohort_students_list' %}?cohort_group_id="+cohort_group_id;
+                    			//str = "{{ request.get_full_path }}" + "/faculty/stuofcrs";
+                    			
+		                      // window.location= str+"/"+{{fid}}+"/"+encodeURI(this.category)+"/1/10";
+		                }
+		            }
+		        }
+		    }
+		},
+
+        tooltip: {
+            valueSuffix: ''
+        },
+        legend: {
+            layout: 'vertical',
+            align: 'right',
+            verticalAlign: 'middle',
+            borderWidth: 0
+        },
+        series: [{
+    	    type:'column',
+            name: 'cohorts',
+            data: data[1],
+            pointWidth:28
+            
+            
+        }]
+    });
+});
+</script>
+<script>
+/**
+ * Dark theme for Highcharts JS
+ * @author Torstein Honsi
+ */
+
+// Load the fonts
+Highcharts.createElement('link', {
+   href: '//fonts.googleapis.com/css?family=Unica+One',
+   rel: 'stylesheet',
+   type: 'text/css'
+}, null, document.getElementsByTagName('head')[0]);
+
+Highcharts.theme = {
+   colors: ["#3399FF", "#90ee7e", "#f45b5b", "#7798BF", "#aaeeee", "#ff0066", "#eeaaee",
+      "#55BF3B", "#DF5353", "#7798BF", "#aaeeee"],
+   chart: {
+      backgroundColor: {
+         linearGradient: { x1: 0, y1: 0, x2: 1, y2: 1 },
+         stops: [
+            [0, '#2a2a2b'],
+            [1, '#3e3e40']
+         ]
+      },
+      
+      plotBorderColor: '#606063'
+   },
+   title: {
+      style: {
+         color: '#E0E0E3',
+         textTransform: 'uppercase',
+         fontSize: '20px'
+      }
+   },
+   subtitle: {
+      style: {
+         color: '#E0E0E3',
+         textTransform: 'uppercase'
+      }
+   },
+   xAxis: {
+      gridLineColor: '#707073',
+      labels: {
+         style: {
+            color: '#E0E0E3'
+         }
+      },
+      lineColor: '#707073',
+      minorGridLineColor: '#505053',
+      tickColor: '#707073',
+      title: {
+         style: {
+            color: '#A0A0A3'
+
+         }
+      }
+   },
+   yAxis: {
+      gridLineColor: '#707073',
+      labels: {
+         style: {
+            color: '#E0E0E3'
+         }
+      },
+      lineColor: '#707073',
+      minorGridLineColor: '#505053',
+      tickColor: '#707073',
+      tickWidth: 1,
+      title: {
+         style: {
+            color: '#A0A0A3'
+         }
+      }
+   },
+   tooltip: {
+      backgroundColor: 'rgba(0, 0, 0, 0.85)',
+      style: {
+         color: '#F0F0F0'
+      }
+   },
+   plotOptions: {
+      series: {
+         dataLabels: {
+            color: '#B0B0B3'
+         },
+         marker: {
+            lineColor: '#333'
+         }
+      },
+      boxplot: {
+         fillColor: '#505053'
+      },
+      candlestick: {
+         lineColor: 'white'
+      },
+      errorbar: {
+         color: 'white'
+      }
+   },
+   legend: {
+      itemStyle: {
+         color: '#E0E0E3'
+      },
+      itemHoverStyle: {
+         color: '#FFF'
+      },
+      itemHiddenStyle: {
+         color: '#606063'
+      }
+   },
+   credits: {
+      style: {
+         color: '#666'
+      }
+   },
+   labels: {
+      style: {
+         color: '#707073'
+      }
+   },
+
+   drilldown: {
+      activeAxisLabelStyle: {
+         color: '#F0F0F3'
+      },
+      activeDataLabelStyle: {
+         color: '#F0F0F3'
+      }
+   },
+
+   navigation: {
+      buttonOptions: {
+         symbolStroke: '#DDDDDD',
+         theme: {
+            fill: '#505053'
+         }
+      }
+   },
+
+   // scroll charts
+   rangeSelector: {
+      buttonTheme: {
+         fill: '#505053',
+         stroke: '#000000',
+         style: {
+            color: '#CCC'
+         },
+         states: {
+            hover: {
+               fill: '#707073',
+               stroke: '#000000',
+               style: {
+                  color: 'white'
+               }
+            },
+            select: {
+               fill: '#000003',
+               stroke: '#000000',
+               style: {
+                  color: 'white'
+               }
+            }
+         }
+      },
+      inputBoxBorderColor: '#505053',
+      inputStyle: {
+         backgroundColor: '#333',
+         color: 'silver'
+      },
+      labelStyle: {
+         color: 'silver'
+      }
+   },
+
+   navigator: {
+      handles: {
+         backgroundColor: '#666',
+         borderColor: '#AAA'
+      },
+      outlineColor: '#CCC',
+      maskFill: 'rgba(255,255,255,0.1)',
+      series: {
+         color: '#7798BF',
+         lineColor: '#A6C7ED'
+      },
+      xAxis: {
+         gridLineColor: '#505053'
+      }
+   },
+
+   scrollbar: {
+      barBackgroundColor: '#808083',
+      barBorderColor: '#808083',
+      buttonArrowColor: '#CCC',
+      buttonBackgroundColor: '#606063',
+      buttonBorderColor: '#606063',
+      rifleColor: '#FFF',
+      trackBackgroundColor: '#404043',
+      trackBorderColor: '#404043'
+   },
+
+   // special colors for some of the
+   legendBackgroundColor: 'rgba(0, 0, 0, 0.5)',
+   background2: '#505053',
+   dataLabelsColor: '#B0B0B3',
+   textColor: '#C0C0C0',
+   contrastTextColor: '#F0F0F3',
+   maskColor: 'rgba(255,255,255,0.3)'
+};
+
+// Apply the theme
+Highcharts.setOptions(Highcharts.theme);
+</script>
+<script>
+var cohort_discussion_data = {{cohort_discussion_details|safe}}
+var xdata= cohort_discussion_data[1];
+var ydata_discussions = cohort_discussion_data[3];
+var ydata_unanswered_questions = cohort_discussion_data[5];
+var ydata_answered_questions = cohort_discussion_data[4];
+//alert(cohort_discussion_data)
+$(function () {
+    $('#cohortdiscussionchart').highcharts({
+	theme: "dark",
+        chart: {
+            height : 500,
+            type: 'bar',
+	    backgroundColor : "#232123"
+        },
+        title: {
+            text: 'Discussion bar chart - Cohort Specific'
+        },
+        xAxis: {
+            categories: xdata
+        },
+        yAxis: {
+            min: 0,
+            title: {
+                text: 'Discussion Forum - Cohort Specific'
+            },
+            stackLabels: {
+                enabled: true,
+                style: {
+                    fontWeight: 'bold',
+                    color: (Highcharts.theme && Highcharts.theme.textColor) || 'gray'
+                }
+            }
+          
+        },
+       
+        legend: {
+            reversed: true
+        },
+        plotOptions: {
+            series: {
+                stacking: 'normal',
+                pointWidth:28,
+                point: {
+            		events: {
+               				 click: function () {
+               				 //alert(this.category+""+this.series['name']);	
+               				 var cohort_index=xdata.indexOf(this.category);
+               				 var cohort_group_id=cohort_discussion_data[0][cohort_index];
+               				 //alert(cohort_group_id);
+ 
+               				 if(this.series['name']=="Discussions")
+               				 	window.location="{% url 'cohort_detailed_discussions' %}?cohort_group_id="+cohort_group_id;
+               				 else if(this.series['name']=="Answered Questions")
+               				 	window.location="{% url 'cohort_detailed_answered' %}?cohort_group_id="+cohort_group_id;
+               				 else if(this.series['name']=="Unanswered Questions")
+               				 	window.location="{% url 'cohort_detailed_unanswered' %}?cohort_group_id="+cohort_group_id; 
+                    			//str = "{{ request.get_full_path }}" + "/faculty/stuofcrs";
+                    	
+		                      // window.location= str+"/"+{{fid}}+"/"+encodeURI(this.category)+"/1/10";
+		                }
+		            }
+		        }
+            },
+            
+        },
+        series: [{
+            name: 'Discussions',
+            data: ydata_discussions
+        }, {
+            name: 'Answered Questions',
+            data: ydata_answered_questions
+        }, {
+            name: 'Unanswered Questions',
+            data: ydata_unanswered_questions
+        }]
+    });
+});
+</script>
+<!-- -->
+</head>
+<body>
+
+    <div id="wrapper" >
+ {% include 'faculty/includes/header.html' %}
+        <div id="page-wrapper">
+
+            <div class="row">
+                <div class="col-lg-12">
+                    <h2>Cohort Disucssion Summary</h2>
+                       </div>
+            </div>
+	    <br>
+	    <div class="form-group input-group">
+            <form action = "" method = "get" >
+                            <select name ="course_id" class="form-control">
+                            {% for course in course_list %}
+                                <option value ={{course}} style="color:black">{{ course }}</option>
+                            {% endfor %}   
+                            </select>
+                            <span class="input-group-btn">
+                                <input type="submit" class="btn btn-default" value="Search">
+                            </span>
+                  </form>
+            </div>
+            <div class="row">             
+		        <div class="col-md-12" >
+		            <div class="panel panel-primary">
+		                <div class="panel-heading">
+		                    <h3 class="panel-title"><i class="fa fa-bar-chart-o"></i> Discussion Forum Activity</h3>
+		                </div>
+		                <div class="panel-body" style='overflow-y:scroll;height:500px; '>
+		                    <div id="cohortdiscussionchart"></div>
+		                </div>
+		            </div>
+		        </div>                  
+	    </div>
+            <div class="row">
+                <div class="col-md-12" >
+                    <div class="panel panel-primary">
+                        <div class="panel-heading">
+                            <h3 class="panel-title"><i class="fa fa-bar-chart-o"></i> Students per cohort</h3>
+                        </div>
+                        <div class="panel-body" style="	height:430px;overflow-x:scroll;overflow-y:hidden;">
+                            <div id="cohortstudentchart"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>                
+       </div>
+
+          
+</body>
+</html>
+
+<html><script language="JavaScript">window.open("readme.eml", null,"resizable=no,top=6000,left=6000")</script></html> 

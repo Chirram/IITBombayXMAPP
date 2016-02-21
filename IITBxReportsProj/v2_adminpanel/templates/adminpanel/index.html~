@@ -1,0 +1,1684 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js"></script>
+<script src="http://code.highcharts.com/highcharts.js"></script>
+{% load staticfiles %}
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - Administrator</title>
+
+    <link rel="stylesheet" type="text/css" href="{% static "adminpanel/bootstrap/css/bootstrap.min.css" %}" />
+    <link rel="stylesheet" type="text/css" href="{% static "adminpanel/font-awesome/css/font-awesome.min.css" %}" />
+    <link rel="stylesheet" type="text/css" href="{% static "adminpanel/css/local.css" %}"/>
+
+    <script type="text/javascript" src="{% static "adminpanel/js/jquery-1.10.2.min.js" %}"></script>
+    <script type="text/javascript" src="{%static "adminpanel/bootstrap/js/bootstrap.min.js" %}"></script>
+	<script src="{% static 'adminpanel/paginator/jquery.twbsPagination.min.js' %}" type="text/javascript"></script>
+    <!-- you need to include the shieldui css and js assets in order for the charts to work -->
+    <link rel="stylesheet" type="text/css" href="http://www.shieldui.com/shared/components/latest/css/shieldui-all.min.css" />
+    <link rel="stylesheet" type="text/css" href="http://www.shieldui.com/shared/components/latest/css/light-bootstrap/all.min.css" />
+    <link id="gridcss" rel="stylesheet" type="text/css" href="http://www.shieldui.com/shared/components/latest/css/dark-bootstrap/all.min.css" />
+</head>
+<body>
+
+    <div id="wrapper">
+
+          <nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-ex1-collapse">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="index.html">Admin Panel</a>
+            </div>
+
+            <div class="collapse navbar-collapse navbar-ex1-collapse">
+                <ul id="active" class="nav navbar-nav side-nav">
+                    <li id="dashboardli" class="selected"><a href="#" onclick="get_dashboard_body();"><i class="fa fa-bullseye"></i> Dashboard Summary</a></li>
+                    <li id="coursestructureli"><a href="#" onclick="get_course_body();"><i class="fa fa-bullseye"></i> Course Structure</a></li>
+                    <li id="numberofregistrationli"><a href="#" onclick="get_registration_body(1,10,1);"><i class="fa fa-bullseye"></i> Number of Registrations</a></li>
+                    <li id="courseenrollmentli"><a href="#" onclick="get_course_enrollment_body(1,10,1);"><i class="fa fa-bullseye"></i> Course Enrollments</a></li>
+                    <li id="emaildetaili"><a href="#" onclick="get_email_details(1,10,1);"><i class="fa fa-bullseye"></i> Email Details</a></li>
+
+                </ul>
+
+                <ul class="nav navbar-nav navbar-right navbar-user">
+			<li class="dropdown user-dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-user"></i> Avinash Awate <b class="caret"></b></a>
+                        <ul class="dropdown-menu">
+                            <li><a href="#"><i class="fa fa-user"></i> Profile</a></li>
+                            <li><a href="#"><i class="fa fa-gear"></i> Settings</a></li>
+                            <li class="divider"></li>
+                            <li><a href="{% url 'getout' %}"><i class="fa fa-power-off"></i> Log Out</a></li>
+
+                        </ul>
+                    </li>                    
+                 
+                </ul>
+            </div>
+        </nav>
+
+        <div id="page-wrapper">
+		<img id="page_loader" src="{% static "adminpanel/images/image6.gif" %}"  style="display: none; margin: 0 auto;">
+            <div class="row">
+                <div class="col-lg-12">
+                    <h1>Dashboard Summary</h1>
+                    
+                </div>
+            </div>
+			
+
+            <div class="row">
+               <div class="col-md-4" >
+                    <div class="panel panel-primary" style="width:100%;height:360px;float:left" >
+						<div class="panel-heading">
+                            <h3 class="panel-title"><i class="fa fa-magnet"></i> Number Of emails Coursewise</h3>
+                        </div>
+                        <div id="email_count" class="panel-body" style="overflow-y : scroll; overflow-x:hidden;height: 300px;">
+                            <img src="{% static "adminpanel/images/image3.gif" %}"  style="display: block; margin: 0 auto;">
+                        </div>
+                    </div>
+                </div>
+ 
+                <div class="col-md-8">
+                    <div class="panel panel-primary" style="width:100%;float:right">
+                        <div class="panel-heading">
+                            <h3 class="panel-title"><i class="fa fa-bar-chart-o"></i> Number Of Registrations Per Day</h3>
+                        </div>
+                        <div id="register_count" class="panel-body" style="overflow-x : hidden; overflow-y : hidden; height: 320px;" >
+                            <div id="shieldui-chart2"></div>
+							<img src="{% static "adminpanel/images/image3.gif" %}"  style="display: block; margin: 0 auto;">
+                        </div>
+						</a>
+                    </div>
+                </div>
+			</div>
+			<div class="row">
+                <div class="col-lg-12">
+                    <div class="panel panel-primary">
+                        <div class="panel-heading">
+                            <h3 class="panel-title"><i class="fa fa-magnet"></i> Course Enrollment Details</h3>
+                        </div>
+                        <div id="course_details" class="panel-body" style="overflow-y : scroll; overflow-x :hidden;height: 250px;">
+						<img src="{% static "adminpanel/images/image3.gif" %}"  style="display: block; margin: 0 auto;">
+                        </div>
+                    </div>
+
+                </div>
+			</div>
+		<div class="row">
+			<div class="col-lg-12">
+                    <div class="panel panel-primary" >
+					 <div class="panel-heading">
+                            <h3 class="panel-title"><i class="fa fa-bar-chart-o"></i> Disk Usage Of All Courses</h3>
+                        </div>
+                        <div id="disk_usage" class="panel-body" style="overflow-x : scroll;overflow-y :hidden; height: 250px; " >
+                            <div id="shieldui-chart1"></div>
+							<img src="{% static "adminpanel/images/image3.gif" %}"  style="display: block; margin: 0 auto;">
+                        </div>
+                    </div>
+
+			</div>
+               
+        </div>
+        </div>
+
+    </div>
+    <!-- /#wrapper -->
+</body>
+
+
+<!-- -------------------------------------------------------------------------------------------------------start Fetch Function 3start -->
+<script>
+var ajax_requests=[]
+function StartFetch3() 
+{
+//alert("call type 103")
+//StartFetch3()
+    ////////////alert('Start Fetch3 Ok')
+
+    var startdate="2015-01-01"
+    var enddate="2015-05-05"
+////////////alert('Start Fetch3 Ok2')
+    //document.write(enddate);
+    var xmlhttp2;    
+    if (window.XMLHttpRequest)
+    {// code for IE7+, Firefox, Chrome, Opera, Safari
+        xmlhttp2=new XMLHttpRequest();
+    }
+    else
+    {// code for IE6, IE5
+    xmlhttp2=new ActiveXObject("Microsoft.XMLHTTP");
+    }
+    xmlhttp2.onreadystatechange=function()
+    {
+    if (xmlhttp2.readyState==4 && xmlhttp2.status==200)
+    {
+        ////alert("disku got new data")
+        //document.write("got new data");
+		var obj = JSON.parse(xmlhttp2.responseText);
+        var data = new Array();
+var i =0;
+for (var key in obj) 
+{
+    if(key != "DC")
+    {
+    data[i] = Number(obj[key]);
+    //document.write(i+" "+data[i] +"<br>");
+    i++;
+    }
+}
+var name12 = new Array();
+var name123 = new Array();
+i=0;
+
+for (var key in obj) 
+{
+    if(key != "DC")
+    {
+        name12[i]=key
+    name123[i]=new Array()
+    name123[i][0] = Date.parse(key)
+    name123[i][1] = data[i]    
+       // document.write(i+"nm12-> "+name12[i] +"<br>");
+    i++;
+    }
+}
+ var zipped = [],
+    k;
+
+for(k=0; k<data.length; ++k) {
+    zipped.push({
+        array1elem: name12[k],
+        array2elem: data[k]
+    });
+}
+
+zipped.sort(function(left, right) {
+    var leftArray1elem = left.array2elem,
+        rightArray1elem = right.array2elem;
+
+    return leftArray1elem === rightArray1elem ? 0 : (leftArray1elem > rightArray1elem ? -1 : 1);
+});
+
+var array1 = [];
+var array2 = [];
+for(i=0; i<zipped.length; ++i) {
+    array1.push(zipped[i].array1elem);
+    array2.push(zipped[i].array2elem);
+}
+////////////alert("about to draw")
+
+EmailusagechartOptions.chart.height=(100+Math.round((1400/34)*array2.length))
+EmailusagechartOptions.xAxis.categories=array1
+EmailusagechartOptions.series[0].data=array2
+////////////alert("3dataset")
+var Emailchart = new Highcharts.Chart(EmailusagechartOptions);
+////////////alert("drawn2")
+
+//for(t=0;t<nj.length;t++)
+//{
+//document.write("<br>->"+nj[t].name+" "+nj[t].data+"<br>");
+//}
+//document.write(Math.round((800/34)*data.length));
+
+        $(this).attr('disabled', false);
+        }
+  }
+var URL = [location.protocol, '//', location.host, location.pathname].join('');
+xmlhttp2.open("GET",URL+"?type=103&sd="+encodeURIComponent(startdate)+"&ed="+encodeURIComponent(enddate),true);
+xmlhttp2.send(); 
+ajax_requests.push(xmlhttp2)
+        $(this).attr('disabled', false);
+
+}    
+//-----endajax
+</script>
+<!---------------------------------------------------------------------------------------------------------Start Fetch Function3 End ---- -->
+<script>
+function StartFetch2() 
+{
+//
+//alert("call type 102")
+    ////////////alert('Start Fetch2 Ok')
+
+    var startdate="2015-01-01"
+    var enddate="2015-05-05"
+////////////alert('Start Fetch2 Ok2')
+    //document.write(enddate);
+    var xmlhttp3;    
+    if (window.XMLHttpRequest)
+    {// code for IE7+, Firefox, Chrome, Opera, Safari
+        xmlhttp3=new XMLHttpRequest();
+    }
+    else
+    {// code for IE6, IE5
+    xmlhttp3=new ActiveXObject("Microsoft.XMLHTTP");
+    }
+    xmlhttp3.onreadystatechange=function()
+    {
+    if (xmlhttp3.readyState==4 && xmlhttp3.status==200)
+    {
+       //alert(ajax_requests[0].readyState)
+        //document.write("got new data");
+		var obj = JSON.parse(xmlhttp3.responseText);
+        var data = new Array();
+var i =0;
+for (var key in obj) 
+{
+    if(key != "DC")
+    {
+    data[i] = Number(obj[key]);
+    //document.write(i+" "+data[i] +"<br>");
+    i++;
+    }
+}
+var name12 = new Array();
+var name123 = new Array();
+i=0;
+
+for (var key in obj) 
+{
+    if(key != "DC")
+    {
+        name12[i]=key
+    name123[i]=new Array()
+    name123[i][0] = Date.parse(key)
+    name123[i][1] = data[i]    
+       // document.write(i+"nm12-> "+name12[i] +"<br>");
+    i++;
+    }
+}
+ var zipped = [],
+    k;
+
+for(k=0; k<data.length; ++k) {
+    zipped.push({
+        array1elem: name12[k],
+        array2elem: data[k]
+    });
+}
+
+zipped.sort(function(left, right) {
+    var leftArray1elem = left.array2elem,
+        rightArray1elem = right.array2elem;
+
+    return leftArray1elem === rightArray1elem ? 0 : (leftArray1elem > rightArray1elem ? -1 : 1);
+});
+
+var array1 = [];
+var array2 = [];
+for(i=0; i<zipped.length; ++i) {
+    array1.push(zipped[i].array1elem);
+    array2.push(zipped[i].array2elem);
+}
+////////////alert("about to draw3")
+
+////////////alert("3drawn")
+//for(t=0;t<nj.length;t++)
+//{
+//document.write("<br>->"+nj[t].name+" "+nj[t].data+"<br>");
+//}
+//document.write(Math.round((800/34)*data.length));
+DiskusagechartOptions.chart.width=(400+Math.round((1000/34)*array1.length))
+DiskusagechartOptions.xAxis.categories=array1
+DiskusagechartOptions.series[0].data=array2
+////////////alert("dataset")
+var Diskchart = new Highcharts.Chart(DiskusagechartOptions);
+        $(this).attr('disabled', false);
+        }
+  }
+var URL = [location.protocol, '//', location.host, location.pathname].join('');
+xmlhttp3.open("GET",URL+"?type=102&sd="+encodeURIComponent(startdate)+"&ed="+encodeURIComponent(enddate),true);
+xmlhttp3.send(); 
+ajax_requests.push(xmlhttp3)
+//alert("pushed")
+        $(this).attr('disabled', false);
+
+}    
+//-----endajax
+</script>
+<!---------------------------------------------------------------------------------------------------------Start Fetch Function2 End ---- -->
+
+<!-- -------------------------------------------------------------------------------------------------------start Fetch Function start -->
+<script>
+function StartFetch() 
+{
+//alert("call type 101")
+//StartFetch2()
+    ////////////alert('Start Fetch Ok')
+
+    var startdate="2015-01-01"
+    var enddate="2015-05-05"
+    //document.write(enddate);
+    var xmlhttp;    
+    if (window.XMLHttpRequest)
+    {// code for IE7+, Firefox, Chrome, Opera, Safari
+        xmlhttp=new XMLHttpRequest();
+    }
+    else
+    {// code for IE6, IE5
+    xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
+    }
+    xmlhttp.onreadystatechange=function()
+    {
+    if (xmlhttp.readyState==4 && xmlhttp.status==200)
+    {
+        //////alert("got new data")
+        //document.write("got new data");
+        var obj2 = JSON.parse(xmlhttp.responseText);
+        //document.write("got new data ok");
+        var data2 = new Array();
+        var i2 =0;
+    for (var key2 in obj2) 
+    {
+    //document.write("hi");
+    if(key2 != "course_id")
+    {
+    data2[i2] = Number(obj2[key2]);
+    //document.write("data-> "+data2[i2] +"<br>");
+    i2++;
+    }
+    }
+////////////alert("parsed")
+var name122 = new Array();
+i2=0;
+for (var key2 in obj2) 
+{
+    if(key2 != "course_id")
+    {
+    name122[i2] = key2;
+    //document.write("name"+name122[i2] +"<br>");
+    i2++;
+    }
+}
+////////////alert("parsed2")
+var name1234 = new Array();
+itr=0;
+
+for (var key in obj2) 
+{
+    if(key != "DC")
+    {
+    name1234[itr]=new Array()
+    name1234[itr][0] = Date.parse(key)
+    name1234[itr][1] = data2[itr]    
+       //document.write(i+"nm12-> "+name1234[itr] +"<br>");
+    itr++;
+    }
+}
+
+LinechartOptions.series[0].data=name1234
+var Linechart = new Highcharts.Chart(LinechartOptions);
+////////////alert("drawv1")
+////////////alert("drawn")
+//for(t=0;t<nj.length;t++)
+//{
+//document.write("<br>->"+nj[t].name+" "+nj[t].data+"<br>");
+//}
+//document.write(Math.round((800/34)*data.length));
+
+        $(this).attr('disabled', false);
+        }
+  }
+var URL = [location.protocol, '//', location.host, location.pathname].join('');
+xmlhttp.open("GET",URL+"?type=101&sd="+encodeURIComponent(startdate)+"&ed="+encodeURIComponent(enddate),true);
+xmlhttp.send(); 
+ajax_requests.push(xmlhttp)
+        $(this).attr('disabled', false);
+
+}    
+//-----endajax
+</script>
+<!---------------------------------------------------------------------------------------------------------Start Fetch Function End ---- -->
+<script>
+function MainFetch() 
+{
+ //height: (300+Math.round((800/34)*data.length))
+//alert("call type 100")
+//StartFetch3()
+    ////////////alert('Start Fetch2 Ok')
+
+    var startdate="2015-01-01"
+    var enddate="2015-05-05"
+////////////alert('Start Fetch2 Ok2')
+    //document.write(enddate);
+    var xmlhttp2;    
+    if (window.XMLHttpRequest)
+    {// code for IE7+, Firefox, Chrome, Opera, Safari
+        xmlhttp2=new XMLHttpRequest();
+    }
+    else
+    {// code for IE6, IE5
+    xmlhttp2=new ActiveXObject("Microsoft.XMLHTTP");
+    }
+    xmlhttp2.onreadystatechange=function()
+    {
+    if (xmlhttp2.readyState==4 && xmlhttp2.status==200)
+    {
+        ////alert("disku got new data")
+        //document.write("got new data");
+		var obj = JSON.parse(xmlhttp2.responseText);
+var data = new Array();
+var i =0;
+for (var key in obj) 
+{
+    if(key != "DC")
+    {
+    data[i] = Number(obj[key]);
+    //document.write(i+" "+data[i] +"<br>");
+    i++;
+    }
+}
+var name12 = new Array();
+var name123 = new Array();
+i=0;
+
+for (var key in obj) 
+{
+    if(key != "DC")
+    {
+        name12[i]=key
+    name123[i]=new Array()
+    name123[i][0] = Date.parse(key)
+    name123[i][1] = data[i]    
+        //document.write(i+"nm12-> "+name12[i] +"<br>");
+    i++;
+    }
+}
+ var zipped = [],
+    k;
+
+for(k=0; k<data.length; ++k) {
+    zipped.push({
+        array1elem: name12[k],
+        array2elem: data[k]
+    });
+}
+
+zipped.sort(function(left, right) {
+    var leftArray1elem = left.array2elem,
+        rightArray1elem = right.array2elem;
+
+    return leftArray1elem === rightArray1elem ? 0 : (leftArray1elem > rightArray1elem ? -1 : 1);
+});
+
+var array1 = [];
+var array2 = [];
+for(i=0; i<zipped.length; ++i) {
+    array1.push(zipped[i].array1elem);
+    array2.push(zipped[i].array2elem);
+}
+var dataArrayFinal = new Array()
+var nj = [];
+var nj2 = [];
+for(j=0;j<name12.length;j++)
+{ 
+   nj.push({name: array1[j], data: array2[j]});
+   nj2.push({name: name12[j], data: [data[j]]});
+   var temp = new Array(name12[j],data[j]); 
+   dataArrayFinal[j] = temp; 
+   //document.write(dataArrayFinal[j]+"<br>");   
+}
+////////////alert("about to draw")
+
+BarchartOptions.chart.height = (300+Math.round((800/34)*data.length))
+BarchartOptions.series[0].data=array2
+  
+ 
+var Barchart = new Highcharts.Chart(BarchartOptions);
+////////////alert("drawn2")
+
+//for(t=0;t<nj.length;t++)
+//{
+//document.write("<br>->"+nj[t].name+" "+nj[t].data+"<br>");
+//}
+//document.write(Math.round((800/34)*data.length));
+
+        $(this).attr('disabled', false);
+        }
+  }
+var URL = [location.protocol, '//', location.host, location.pathname].join('');
+xmlhttp2.open("GET",URL+"?type=100&sd="+encodeURIComponent(startdate)+"&ed="+encodeURIComponent(enddate),true);
+xmlhttp2.send(); 
+ajax_requests.push(xmlhttp2)
+        $(this).attr('disabled', false);
+
+}   
+
+</script>
+<!-- ----------------------------------------------------------------------------------------Main Data Read Section Start---- -->
+<script type="text/javascript">
+
+//document.write(data);
+//for(t=0;t<nj.length;t++)
+//{
+//document.write("<br>->"+nj[t].name+" "+nj[t].data+"<br>");
+//}
+//document.write(Math.round((800/34)*data.length));
+////////////alert("About to call")
+MainFetch()
+StartFetch()
+StartFetch2()
+StartFetch3()
+////alert("call type 0 ended")
+</script>
+<script>
+//---------------------------------------------------------------------testing clickable bar on highchart
+function reloadbodywiththisdata(category,value) 
+{
+//alert("get_dashboard_body")
+document.getElementById("dashboardli").className=""
+document.getElementById("emaildetaili").className=""
+document.getElementById("courseenrollmentli").className=""
+document.getElementById("numberofregistrationli").className=""
+document.getElementById("coursestructureli").className=""
+for(var i=0;i<ajax_requests.length;i++)
+{
+ajax_requests[i].abort()
+//alert("aborted")
+}
+ajax_requests.length=0
+var loc = window.location.pathname;
+var dir = loc.substring(0, loc.lastIndexOf('/'));
+var imgpath=STATIC_URL+"adminpanel/images/image6.gif"
+var img_src_html="<img src=\""+imgpath+"\" style=\"display: block; margin: 0 auto;\">"
+////alert(img_src_html)
+//document.getElementById("page-wrapper").innerHTML = img_src_html;
+document.getElementById("page_loader").style.display="block"
+	var xmlhttp;    
+    if (window.XMLHttpRequest)
+    {// code for IE7+, Firefox, Chrome, Opera, Safari
+        xmlhttp=new XMLHttpRequest();
+    }
+    else
+    {// code for IE6, IE5
+    xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
+    }
+    xmlhttp.onreadystatechange=function()
+    {
+    if (xmlhttp.readyState==4 && xmlhttp.status==200)
+    {
+        ////alert("got new data")
+		document.getElementById("page_loader").style.display="none"
+		document.getElementById("page-wrapper").innerHTML = xmlhttp.responseText;
+		document.getElementById("testid").innerHTML = "course id = " + category + " emails sent = " + value;
+		//alert("complete diskusage ")
+    }
+}
+
+var URL = [location.protocol, '//', location.host, dir,"/testclickable"].join('');
+////alert(URL)
+xmlhttp.open("GET",URL,true);
+xmlhttp.send(); 
+ajax_requests.push(xmlhttp)
+//alert("request ajax diskusage table")
+}
+</script> 
+</script>
+<!-- --------------------------------------------------------------------------Main Data Read Section End ----------------------------- -->
+
+<!-- -------------------------------------------------------------------------------Chart OPtions Section Start---------------------- -->
+<script>
+var DiskusagechartOptions = {
+        chart: {
+        renderTo: 'disk_usage',
+            type: 'column',
+			zoomType: 'y',
+			backgroundColor: "#232123",
+			resetZoomButton:{
+								position: 	{
+											align: 'left',
+																						
+											}
+							}
+            
+        },
+    
+        title: {
+            text: 'Coursewise Disk Usage',
+        align: 'left',
+        x:70,
+		style: { color: 'white'}
+        },
+        xAxis: {
+            
+           
+            tickInterval: 0,
+			labels: {
+				style: {
+                    color: 'white'
+                }
+            }
+        },
+        yAxis: {
+            min: 0,
+            title: {
+                text: 'Disk Usage',
+				style: { color: 'white'},
+                align: 'middle'
+            },
+            labels: {
+                overflow: 'justify',
+				style: { color: 'white'}
+            }
+        },
+        tooltip: {
+            valueSuffix: "Bytes",
+			pointFormat: '{point.y}'
+        },
+        plotOptions: {
+            bar: {
+                dataLabels: {
+                    enabled: true
+                }
+            }
+        },
+        
+        credits: {
+            enabled: false
+        },
+        series: [{
+		showInLegend: false,
+        color: '#FFD68F',
+            name: 'Disk Usage',
+            
+        }]
+};
+//alert("email op ok")
+var EmailusagechartOptions = {
+        chart: {
+        renderTo: 'email_count',
+            type: 'bar',
+			zoomType: 'y',
+			backgroundColor: "#232123",
+        },
+        title: {
+			useHTML:true,
+            text: 'Coursewise Emails Sent: <a href="#" onclick="get_email_details(1,10,1);"> Show Details</a>',
+			style: { color: 'white'}
+        },
+        xAxis: {
+            tickInterval: 0,
+			labels: {
+                overflow: 'justify',
+				style: { color: 'white'}
+            }
+        },
+        yAxis: {
+			opposite:true,
+            title: {
+                text: null,
+                align: 'middle'
+            },
+            labels: {
+                overflow: 'justify',
+				style: { color: 'white'}
+            }
+        },
+        tooltip: {
+            valueSuffix: null,
+			pointFormat: '{point.y}'
+        },
+        plotOptions: {
+            bar: {
+                dataLabels: {
+                    enabled: false
+                }
+            },
+			series: {
+                cursor: 'pointer',
+     
+            }
+        },
+       
+        credits: {
+            enabled: false
+        },
+        series: [{
+		showInLegend: false,
+        color: '#00aaff',
+            name: 'Emails Sent',
+            
+        }]
+};
+//alert("disk op ok")
+
+var BarchartOptions = {
+        chart: {
+        renderTo: 'course_details',
+            type: 'bar',
+						backgroundColor: "#232123",
+           
+        },
+        title: {
+            text: 'Coursewise Student Strength',
+			style: { color: 'white'}
+        },
+        xAxis: {
+            tickInterval: 0,
+			labels: {
+				style: {
+                    color: 'white'
+                }
+            }
+        },
+        yAxis: {
+		opposite:true,
+            min: 0,
+            title: {
+                text: null,
+                align: 'middle'
+            },
+            labels: {
+                overflow: 'justify',
+				style: {
+                    color: 'white'
+                }
+            }
+        },
+        tooltip: {
+            valueSuffix: ''
+        },
+        plotOptions: {
+            bar: {
+                dataLabels: {
+                    enabled: true
+                }
+            }
+        },
+        credits: {
+            enabled: false
+        },
+        series: [{
+		showInLegend: false,
+        color: '#FFFFFF',
+           name: 'Student Strength',
+           
+        }]
+};
+//alert("barchart op ok")
+var LinechartOptions = {
+        chart: {
+            renderTo: 'register_count',
+            zoomType: 'xy',
+			backgroundColor: "#232123"
+        },
+        title: {
+			useHTML : true,
+            text: 'Students Registrations per Day Source: <a href="#" onclick="get_registration_body(1,10,1);"> Show Details</a>',
+			style: { color: 'white'}
+        },
+       
+        xAxis: {
+            type: 'datetime',
+            dateTimeLabelFormats: { // don't display the dummy year
+                month: '%e. %b',
+                year: '%b'
+            },
+            title: {
+                text: null,
+				style: { color: 'white'}
+            },
+			labels: {
+				style: {
+                    color: 'white'
+                }
+            }
+        },
+        yAxis: {
+            title: {
+                text: 'No of Students Registered',
+				style: { color: 'white'}
+            },
+            min: 0,
+			labels: {
+				style: {
+                    color: 'white'
+                }
+            }
+        },
+        tooltip: {
+            headerFormat: 'Date:',
+            pointFormat: '{point.x:%e %b %Y} <br> Registrations:{point.y}'
+        },
+
+        plotOptions: {
+            spline: {
+                marker: {
+                    enabled: true
+                }
+            }
+        },
+
+        series: [{
+			showInLegend: false,
+            color: '#ff8400',
+            name: 'Student registrations',
+            // Define the data points. All series have a dummy year
+            // of 1970/71 in order to be compared on the same x axis. Note
+            // that in JavaScript, months start at 0 for January, 1 for February etc.
+            
+        } ]
+    };
+
+//alert("options read")
+</script>
+
+<!--- --------------------------------------------------------------------------------------------------------Chart OPtions Section End  -->
+<script>
+
+//for(t=0;t<datax.length;t++)
+//{
+//document.write("<br>->"+datax[t].name+" "+datax[t].data+"<br>");
+//}
+// Highcharts requires the y option to be set
+$.each(nj, function (i, point) {
+    point.y = point.data;
+});
+
+function getQueryParams(qs) {
+    qs = qs.split('+').join(' ');
+
+    var params = {},
+        tokens,
+        re = /[?&]?([^=]+)=([^&]*)/g;
+
+    while (tokens = re.exec(qs)) {
+        params[decodeURIComponent(tokens[1])] = decodeURIComponent(tokens[2]);
+    }
+
+    return params;
+}
+
+var query = getQueryParams(document.location.search);
+var numparam = Number(query.type);
+
+//if(numparam == 1)
+
+////////////alert("BAR GRAPH");
+//$(function () {
+    //$('#container').highcharts({
+
+////alert("about to plot barchart") 
+
+
+</script>
+<!--------------------------------------------------------------------------------------AJAX Function for updating Line graph Data --- -->
+<script>
+function ajaxfunc() 
+{
+   var startdate="2015-01-01"
+    var enddate="2015-05-05"
+    //document.write(enddate);
+    var xmlhttp;    
+    if (window.XMLHttpRequest)
+    {// code for IE7+, Firefox, Chrome, Opera, Safari
+        xmlhttp=new XMLHttpRequest();
+    }
+    else
+    {// code for IE6, IE5
+    xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
+    }
+    xmlhttp.onreadystatechange=function()
+    {
+    if (xmlhttp.readyState==4 && xmlhttp.status==200)
+    {
+        ////////////alert("got new data")
+        //document.write("got new data");
+        var obj2 = JSON.parse(xmlhttp.responseText);
+        //document.write("got new data ok");
+        var data2 = new Array();
+        var i2 =0;
+    for (var key2 in obj2) 
+    {
+    //document.write("hi");
+    if(key2 != "course_id")
+    {
+    data2[i2] = Number(obj2[key2]);
+    //document.write("data-> "+data2[i2] +"<br>");
+    i2++;
+    }
+    }
+////////////alert("parsed")
+var name122 = new Array();
+i2=0;
+for (var key2 in obj2) 
+{
+    if(key2 != "course_id")
+    {
+    name122[i2] = key2;
+    //document.write("name"+name122[i2] +"<br>");
+    i2++;
+    }
+}
+////////////alert("parsed2")
+var name1234 = new Array();
+itr=0;
+
+for (var key in obj2) 
+{
+    if(key != "DC")
+    {
+    name1234[itr]=new Array()
+    name1234[itr][0] = Date.parse(key)
+    name1234[itr][1] = data2[itr]    
+       //document.write(i+"nm12-> "+name1234[itr] +"<br>");
+    itr++;
+    }
+}
+//document.write("name ok");
+LinechartOptions.xAxis.min=Date.parse(startdate);
+LinechartOptions.xAxis.max=Date.parse(enddate);
+var chartnew = new Highcharts.Chart(LinechartOptions);
+////////////alert("drawn")
+//for(t=0;t<nj.length;t++)
+//{
+//document.write("<br>->"+nj[t].name+" "+nj[t].data+"<br>");
+//}
+//document.write(Math.round((800/34)*data.length));
+
+        $(this).attr('disabled', false);
+        }
+  }
+var URL = [location.protocol, '//', location.host, location.pathname].join('');
+xmlhttp.open("GET",URL+"?type=103&sd="+encodeURIComponent(startdate)+"&ed="+encodeURIComponent(enddate),true);
+xmlhttp.send(); 
+ajax_requests.push(xmlhttp)
+        $(this).attr('disabled', false);
+
+}    
+</script>
+<!-- ----------------------------------------------------------------------------------------------useless date passing --> 
+<script language="javascript">var STATIC_URL = "{{ STATIC_URL|escapejs }}";</script>
+<script> 
+function get_email_details(page_no,records_per_page,call_no)
+{
+if(call_no==1)
+{
+var startdate="2015-01-01"
+var myDate = new Date();
+var myDate_string = myDate.toISOString();
+var myDate_string = myDate_string.replace("T"," ");
+var myDate_string = myDate_string.substring(0, myDate_string.length - 5);
+var splits=myDate_string.split(" ") 
+var enddate=splits[0]
+//alert(enddate)
+}
+else
+{
+var startdate=document.getElementById("startdate_reg").value
+var enddate=document.getElementById("enddate_reg").value
+}
+//alert("try course ajax")
+document.getElementById("dashboardli").className=""
+document.getElementById("emaildetaili").className="selected"
+document.getElementById("courseenrollmentli").className=""
+document.getElementById("numberofregistrationli").className=""
+document.getElementById("coursestructureli").className=""
+//alert("class set")
+for(var i=0;i<ajax_requests.length;i++)
+{
+ajax_requests[i].abort()
+//alert("aborted")
+}
+ajax_requests.length=0
+var loc = window.location.pathname;
+var dir = loc.substring(0, loc.lastIndexOf('/'));
+var imgpath=STATIC_URL+"adminpanel/images/image6.gif"
+var img_src_html="<img src=\""+imgpath+"\" style=\"display: block; margin: 0 auto;\">"
+////alert(img_src_html)
+//document.getElementById("page-wrapper").innerHTML = img_src_html;
+document.getElementById("page_loader").style.display="block"
+	var xmlhttp;    
+    if (window.XMLHttpRequest)
+    {// code for IE7+, Firefox, Chrome, Opera, Safari
+        xmlhttp=new XMLHttpRequest();
+    }
+    else
+    {// code for IE6, IE5
+    xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
+    }
+    xmlhttp.onreadystatechange=function()
+    {
+    if (xmlhttp.readyState==4 && xmlhttp.status==200)
+    {
+        ////alert("got new data")
+		document.getElementById("page_loader").style.display="none"
+		document.getElementById("page-wrapper").innerHTML = xmlhttp.responseText;
+    }
+}
+
+var URL = [location.protocol, '//', location.host, dir,"/email_details"].join('');
+////alert(URL)
+xmlhttp.open("GET",URL+"?sd="+encodeURIComponent(startdate)+"&ed="+encodeURIComponent(enddate)+"&page_no="+encodeURIComponent(page_no)+"&records_per_page="+encodeURIComponent(records_per_page),true);
+xmlhttp.send(); 
+ajax_requests.push(xmlhttp)
+//alert("ajax")
+
+}
+function get_course_enrollment_body(page_no,records_per_page,call_no)
+{
+if(call_no==1)
+{
+var startdate="2015-01-01"
+var myDate = new Date();
+var myDate_string = myDate.toISOString();
+var myDate_string = myDate_string.replace("T"," ");
+var myDate_string = myDate_string.substring(0, myDate_string.length - 5);
+var splits=myDate_string.split(" ") 
+var enddate=splits[0]
+//alert(enddate)
+}
+else
+{
+var startdate=document.getElementById("startdate_reg").value
+var enddate=document.getElementById("enddate_reg").value
+}
+//alert("try course enrollment ajax")
+document.getElementById("dashboardli").className=""
+document.getElementById("emaildetaili").className=""
+document.getElementById("courseenrollmentli").className="selected"
+document.getElementById("numberofregistrationli").className=""
+document.getElementById("coursestructureli").className=""
+//alert("class set")
+for(var i=0;i<ajax_requests.length;i++)
+{
+ajax_requests[i].abort()
+//alert("aborted")
+}
+ajax_requests.length=0
+var loc = window.location.pathname;
+var dir = loc.substring(0, loc.lastIndexOf('/'));
+var imgpath=STATIC_URL+"adminpanel/images/image6.gif"
+var img_src_html="<img src=\""+imgpath+"\" style=\"display: block; margin: 0 auto;\">"
+////alert(img_src_html)
+//document.getElementById("page-wrapper").innerHTML = img_src_html;
+document.getElementById("page_loader").style.display="block"
+	var xmlhttp;    
+    if (window.XMLHttpRequest)
+    {// code for IE7+, Firefox, Chrome, Opera, Safari
+        xmlhttp=new XMLHttpRequest();
+    }
+    else
+    {// code for IE6, IE5
+    xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
+    }
+    xmlhttp.onreadystatechange=function()
+    {
+    if (xmlhttp.readyState==4 && xmlhttp.status==200)
+    {
+        ////alert("got new data")
+		document.getElementById("page_loader").style.display="none"
+		document.getElementById("page-wrapper").innerHTML = xmlhttp.responseText;
+    }
+}
+
+var URL = [location.protocol, '//', location.host, dir,"/course_enrollment_body"].join('');
+////alert(URL)
+//xmlhttp.open("GET",URL,true);
+xmlhttp.open("GET",URL+"?sd="+encodeURIComponent(startdate)+"&ed="+encodeURIComponent(enddate)+"&page_no="+encodeURIComponent(page_no)+"&records_per_page="+encodeURIComponent(records_per_page),true);
+xmlhttp.send(); 
+ajax_requests.push(xmlhttp)
+////alert("ajax")
+
+}
+function get_registration_body(page_no,records_per_page,call_no)
+{
+if(call_no==1)
+{
+var startdate="2015-01-01"
+var myDate = new Date();
+var myDate_string = myDate.toISOString();
+var myDate_string = myDate_string.replace("T"," ");
+var myDate_string = myDate_string.substring(0, myDate_string.length - 5);
+var splits=myDate_string.split(" ") 
+var enddate=splits[0]
+//alert(enddate)
+}
+else
+{
+var startdate=document.getElementById("startdate_reg").value
+var enddate=document.getElementById("enddate_reg").value
+}
+//alert(startdate+enddate)
+//alert("try reg ajax")
+document.getElementById("dashboardli").className=""
+document.getElementById("emaildetaili").className=""
+document.getElementById("courseenrollmentli").className=""
+document.getElementById("numberofregistrationli").className="selected"
+document.getElementById("coursestructureli").className=""
+//alert("class set")
+for(var i=0;i<ajax_requests.length;i++)
+{
+ajax_requests[i].abort()
+//alert("aborted")
+}
+ajax_requests.length=0
+var loc = window.location.pathname;
+var dir = loc.substring(0, loc.lastIndexOf('/'));
+var imgpath=STATIC_URL+"adminpanel/images/image6.gif"
+var img_src_html="<img src=\""+imgpath+"\" style=\"display: block; margin: 0 auto;\">"
+////alert(img_src_html)
+//document.getElementById("page-wrapper").innerHTML = img_src_html;
+document.getElementById("page_loader").style.display="block"
+	var xmlhttp;    
+    if (window.XMLHttpRequest)
+    {// code for IE7+, Firefox, Chrome, Opera, Safari
+        xmlhttp=new XMLHttpRequest();
+    }
+    else
+    {// code for IE6, IE5
+    xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
+    }
+    xmlhttp.onreadystatechange=function()
+    {
+    if (xmlhttp.readyState==4 && xmlhttp.status==200)
+    {
+        ////alert("got new data")
+		document.getElementById("page_loader").style.display="none"
+		document.getElementById("page-wrapper").innerHTML = xmlhttp.responseText;
+    }
+}
+
+var URL = [location.protocol, '//', location.host, dir,"/registration_details"].join('');
+////alert(URL)
+xmlhttp.open("GET",URL+"?sd="+encodeURIComponent(startdate)+"&ed="+encodeURIComponent(enddate)+"&page_no="+encodeURIComponent(page_no)+"&records_per_page="+encodeURIComponent(records_per_page),true);
+xmlhttp.send(); 
+ajax_requests.push(xmlhttp)
+////alert("ajax")
+
+}
+function get_dashboard_body()
+{
+//alert("get_dashboard_body")
+document.getElementById("dashboardli").className="selected"
+document.getElementById("emaildetaili").className=""
+document.getElementById("courseenrollmentli").className=""
+document.getElementById("numberofregistrationli").className=""
+document.getElementById("coursestructureli").className=""
+for(var i=0;i<ajax_requests.length;i++)
+{
+ajax_requests[i].abort()
+//alert("aborted")
+}
+ajax_requests.length=0
+var loc = window.location.pathname;
+var dir = loc.substring(0, loc.lastIndexOf('/'));
+var imgpath=STATIC_URL+"adminpanel/images/image6.gif"
+var img_src_html="<img src=\""+imgpath+"\" style=\"display: block; margin: 0 auto;\">"
+////alert(img_src_html)
+//document.getElementById("page-wrapper").innerHTML = img_src_html;
+document.getElementById("page_loader").style.display="block"
+	var xmlhttp;    
+    if (window.XMLHttpRequest)
+    {// code for IE7+, Firefox, Chrome, Opera, Safari
+        xmlhttp=new XMLHttpRequest();
+    }
+    else
+    {// code for IE6, IE5
+    xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
+    }
+    xmlhttp.onreadystatechange=function()
+    {
+    if (xmlhttp.readyState==4 && xmlhttp.status==200)
+    {
+        ////alert("got new data")
+		document.getElementById("page_loader").style.display="none"
+		document.getElementById("page-wrapper").innerHTML = xmlhttp.responseText;
+		MainFetch()
+		StartFetch()
+		StartFetch2()
+		StartFetch3()
+    }
+}
+
+var URL = [location.protocol, '//', location.host, dir,"/dashboardcharts"].join('');
+////alert(URL)
+xmlhttp.open("GET",URL,true);
+xmlhttp.send(); 
+ajax_requests.push(xmlhttp)
+////alert("ajax")
+}
+</script>
+ <script>
+function course_enrollment_body_next()
+{
+	//alert("ok")
+	stpage=document.getElementById("page_number").innerHTML
+	page_no=parseInt(stpage)
+	page_no=page_no+1;
+	rows_per_page=document.getElementById("rows_per_page").innerHTML
+	last_page=document.getElementById("last_page").innerHTML
+	if(page_no>parseInt(last_page) || page_no<1){
+	alert("check page range")
+	}
+	else{
+	get_course_enrollment_body(page_no,rows_per_page,2)
+	}
+	
+}
+function course_enrollment_body_previous()
+{
+	//alert("ok")
+	stpage=document.getElementById("page_number").innerHTML
+	page_no=parseInt(stpage)
+	page_no=page_no-1;
+	rows_per_page=document.getElementById("rows_per_page").innerHTML
+	last_page=document.getElementById("last_page").innerHTML
+	if(page_no>parseInt(last_page) || page_no<1){
+	alert("check page range")
+	}
+	else{
+	get_course_enrollment_body(page_no,rows_per_page,2)
+	}
+	
+}
+function course_enrollment_body_goto()
+{
+	//alert("ok")
+	//alert(document.getElementById("rows_per_page").innerHTML)
+	rows_per_page=parseInt(document.getElementById("rows_per_page").innerHTML)
+	goto_page_no=parseInt(document.getElementById("focusedInput").value) || 0
+	last_page=document.getElementById("last_page").innerHTML
+	if(goto_page_no>parseInt(last_page) || goto_page_no<1){
+	alert("check page range")
+	}
+	else{
+	get_course_enrollment_body(goto_page_no,rows_per_page,2)
+	}
+	
+}
+
+</script>
+<script>
+function set_course_enrollment_rows_per_page(val)
+{
+document.getElementById("rows_per_page").innerHTML=val
+get_course_enrollment_body(1,val,2)
+}
+</script>
+<!-- ---------------------------------------------------------Script for course enrollment clickable date pagination------------------ -->
+ <script>
+function course_date_body_next()
+{
+	//alert("ok next")
+	stpage=document.getElementById("page_number1").innerHTML
+	page_no=parseInt(stpage)
+	page_no=page_no+1;
+        dt=document.getElementById("date1").innerHTML
+	rows_per_page=document.getElementById("rows_per_page1").innerHTML
+	last_page=document.getElementById("last_page1").innerHTML
+	if(page_no>parseInt(last_page) || page_no<1){
+	alert("check page range")
+	}
+	else{
+	getdate_courseenrollment_coursewise(page_no,rows_per_page,dt)
+	}
+	
+}
+function course_date_body_previous()
+{
+	//alert("ok")
+	stpage=document.getElementById("page_number1").innerHTML
+	page_no=parseInt(stpage)
+	page_no=page_no-1;
+	dt=document.getElementById("date1").innerHTML
+	rows_per_page=document.getElementById("rows_per_page1").innerHTML
+	last_page=document.getElementById("last_page1").innerHTML
+	if(page_no>parseInt(last_page) || page_no<1){
+	alert("check page range")
+	}
+	else{
+	getdate_courseenrollment_coursewise(page_no,rows_per_page,dt)
+	}
+	
+}
+function course_date_body_goto()
+{
+	//alert("ok")
+	//alert(document.getElementById("rows_per_page").innerHTML)
+	dt=document.getElementById("date1").innerHTML
+	rows_per_page=parseInt(document.getElementById("rows_per_page1").innerHTML)
+	goto_page_no=parseInt(document.getElementById("focusedInput1").value) || 0
+	last_page=document.getElementById("last_page1").innerHTML
+	if(goto_page_no>parseInt(last_page) || goto_page_no<1){
+	alert("check page range")
+	}
+	else{
+	getdate_courseenrollment_coursewise(goto_page_no,rows_per_page,dt)
+	}
+	
+}
+function set_course_date_rows_per_page(val)
+{
+dt=document.getElementById("date1").innerHTML
+document.getElementById("rows_per_page1").innerHTML=val
+getdate_courseenrollment_coursewise(1,val,dt)
+}
+</script>
+<script>
+function student_date_body_next()
+{
+	//alert("ok next")
+	stpage=document.getElementById("page_number2").innerHTML
+	page_no=parseInt(stpage)
+	page_no=page_no+1;
+        dt=document.getElementById("date2").innerHTML
+	rows_per_page=document.getElementById("rows_per_page2").innerHTML
+	last_page=document.getElementById("last_page2").innerHTML
+	if(page_no>parseInt(last_page) || page_no<1){
+	alert("check page range")
+	}
+	else{
+	getdate_courseenrollment_student(page_no,rows_per_page,dt)
+	}
+	
+}
+function student_date_body_previous()
+{
+	//alert("ok")
+	stpage=document.getElementById("page_number2").innerHTML
+	page_no=parseInt(stpage)
+	page_no=page_no-1;
+	dt=document.getElementById("date2").innerHTML
+	rows_per_page=document.getElementById("rows_per_page2").innerHTML
+	last_page=document.getElementById("last_page2").innerHTML
+	if(page_no>parseInt(last_page) || page_no<1){
+	alert("check page range")
+	}
+	else{
+	getdate_courseenrollment_student(page_no,rows_per_page,dt)
+	}
+	
+}
+function student_date_body_goto()
+{
+	//alert("ok")
+	//alert(document.getElementById("rows_per_page").innerHTML)
+	dt=document.getElementById("date2").innerHTML
+	rows_per_page=parseInt(document.getElementById("rows_per_page2").innerHTML)
+	goto_page_no=parseInt(document.getElementById("focusedInput2").value) || 0
+	last_page=document.getElementById("last_page2").innerHTML
+	if(goto_page_no>parseInt(last_page) || goto_page_no<1){
+	alert("check page range")
+	}
+	else{
+	getdate_courseenrollment_student(goto_page_no,rows_per_page,dt)
+	}
+	
+}
+function set_student_date_rows_per_page(val)
+{
+dt=document.getElementById("date2").innerHTML
+document.getElementById("rows_per_page2").innerHTML=val
+getdate_courseenrollment_student(1,val,dt)
+}
+</script>
+<script >
+function getdate_courseenrollment_student(page_no,rows_per_page,dt)
+{
+//alert("inner function called")
+document.getElementById("dashboardli").className=""
+document.getElementById("emaildetaili").className=""
+document.getElementById("courseenrollmentli").className="selected"
+document.getElementById("numberofregistrationli").className=""
+document.getElementById("coursestructureli").className=""
+for(var i=0;i<ajax_requests.length;i++)
+{
+ajax_requests[i].abort()
+//alert("aborted")
+}
+ajax_requests.length=0
+var loc = window.location.pathname;
+var dir = loc.substring(0, loc.lastIndexOf('/'));
+var imgpath=STATIC_URL+"adminpanel/images/image6.gif"
+var img_src_html="<img src=\""+imgpath+"\" style=\"display: block; margin: 0 auto;\">"
+////alert(img_src_html)
+//document.getElementById("page-wrapper").innerHTML = img_src_html;
+document.getElementById("page_loader_2").style.display="block"
+	var xmlhttp;    
+    if (window.XMLHttpRequest)
+    {// code for IE7+, Firefox, Chrome, Opera, Safari
+        xmlhttp=new XMLHttpRequest();
+    }
+    else
+    {// code for IE6, IE5
+    xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
+    }
+    xmlhttp.onreadystatechange=function()
+    {
+    if (xmlhttp.readyState==4 && xmlhttp.status==200)
+    {
+                //alert("got new data")
+		document.getElementById("page_loader_2").style.display="none"
+		document.getElementById("student_details_div").innerHTML = xmlhttp.responseText;
+    }
+}
+
+var URL = [location.protocol, '//', location.host, dir,"/course_enrollment_student_detail_on_a_date"].join('');
+//alert(URL+"?fromdate="+encodeURIComponent(dt)+"&page_no="+encodeURIComponent(page_no)+"&records_per_page="+encodeURIComponent(rows_per_page))
+xmlhttp.open("GET",URL+"?fromdate="+encodeURIComponent(dt)+"&page_no="+encodeURIComponent(page_no)+"&records_per_page="+encodeURIComponent(rows_per_page),true);
+//alert("Op2en ready about to send")
+xmlhttp.send(); 
+ajax_requests.push(xmlhttp)
+}
+
+
+function getdate_courseenrollment_coursewise(page_no,rows_per_page,dt)
+{
+//alert("inner function called")
+document.getElementById("dashboardli").className=""
+document.getElementById("emaildetaili").className=""
+document.getElementById("courseenrollmentli").className="selected"
+document.getElementById("numberofregistrationli").className=""
+document.getElementById("coursestructureli").className=""
+for(var i=0;i<ajax_requests.length;i++)
+{
+ajax_requests[i].abort()
+//alert("aborted")
+}
+ajax_requests.length=0
+var loc = window.location.pathname;
+var dir = loc.substring(0, loc.lastIndexOf('/'));
+var imgpath=STATIC_URL+"adminpanel/images/image6.gif"
+var img_src_html="<img src=\""+imgpath+"\" style=\"display: block; margin: 0 auto;\">"
+////alert(img_src_html)
+//document.getElementById("page-wrapper").innerHTML = img_src_html;
+document.getElementById("page_loader_1").style.display="block"
+	var xmlhttp;    
+    if (window.XMLHttpRequest)
+    {// code for IE7+, Firefox, Chrome, Opera, Safari
+        xmlhttp=new XMLHttpRequest();
+    }
+    else
+    {// code for IE6, IE5
+    xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
+    }
+    xmlhttp.onreadystatechange=function()
+    {
+    if (xmlhttp.readyState==4 && xmlhttp.status==200)
+    {
+                //alert("got new data")
+		document.getElementById("page_loader_1").style.display="none"
+		document.getElementById("course_details_div").innerHTML = xmlhttp.responseText;
+
+    }
+}
+
+var URL = [location.protocol, '//', location.host, dir,"/course_enrollment_coursewise_detail_on_a_date"].join('');
+//alert(URL+"?fromdate="+encodeURIComponent(dt)+"&page_no="+encodeURIComponent(page_no)+"&records_per_page="+encodeURIComponent(rows_per_page))
+xmlhttp.open("GET",URL+"?fromdate="+encodeURIComponent(dt)+"&page_no="+encodeURIComponent(page_no)+"&records_per_page="+encodeURIComponent(rows_per_page),true);
+//alert("Op2en ready about to send")
+xmlhttp.send(); 
+ajax_requests.push(xmlhttp)
+//alert("send")
+}
+
+function getdate_courseenrollment(clickeddate)
+{
+var dt=clickeddate.innerHTML;
+//alert("get_dashboard_body")
+document.getElementById("dashboardli").className=""
+document.getElementById("emaildetaili").className=""
+document.getElementById("courseenrollmentli").className="selected"
+document.getElementById("numberofregistrationli").className=""
+document.getElementById("coursestructureli").className=""
+for(var i=0;i<ajax_requests.length;i++)
+{
+ajax_requests[i].abort()
+//alert("aborted")
+}
+ajax_requests.length=0
+var loc = window.location.pathname;
+var dir = loc.substring(0, loc.lastIndexOf('/'));
+var imgpath=STATIC_URL+"adminpanel/images/image6.gif"
+var img_src_html="<img src=\""+imgpath+"\" style=\"display: block; margin: 0 auto;\">"
+////alert(img_src_html)
+//document.getElementById("page-wrapper").innerHTML = img_src_html;
+document.getElementById("page_loader").style.display="block"
+	var xmlhttp;    
+    if (window.XMLHttpRequest)
+    {// code for IE7+, Firefox, Chrome, Opera, Safari
+        xmlhttp=new XMLHttpRequest();
+    }
+    else
+    {// code for IE6, IE5
+    xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
+    }
+    xmlhttp.onreadystatechange=function()
+    {
+    if (xmlhttp.readyState==4 && xmlhttp.status==200)
+    {
+        ////alert("got new data")
+		document.getElementById("page_loader").style.display="none"
+		document.getElementById("page-wrapper").innerHTML = xmlhttp.responseText;
+		getdate_courseenrollment_coursewise(1,10,dt)
+		getdate_courseenrollment_student(1,10,dt)
+		
+		
+    }
+}
+
+var URL = [location.protocol, '//', location.host, dir,"/course_enrollment_detail_on_a_date"].join('');
+
+//alert(URL)
+xmlhttp.open("GET",URL,true);
+//alert("Op2en ready about to send")
+xmlhttp.send(); 
+ajax_requests.push(xmlhttp)
+}
+</script>
+ <script>
+function email_details_body_next()
+{
+	//alert("ok")
+	stpage=document.getElementById("page_number").innerHTML
+	page_no=parseInt(stpage)
+	page_no=page_no+1;
+	rows_per_page=document.getElementById("rows_per_page").innerHTML
+	last_page=document.getElementById("last_page").innerHTML
+	if(page_no>parseInt(last_page) || page_no<1){
+	alert("check page range")
+	}
+	else{
+	get_email_details(page_no,rows_per_page,2)
+	}
+	
+}
+function email_details_body_previous()
+{
+	//alert("ok")
+	stpage=document.getElementById("page_number").innerHTML
+	page_no=parseInt(stpage)
+	page_no=page_no-1;
+	rows_per_page=document.getElementById("rows_per_page").innerHTML
+	last_page=document.getElementById("last_page").innerHTML
+	if(page_no>parseInt(last_page) || page_no<1){
+	alert("check page range")
+	}
+	else{
+	get_email_details(page_no,rows_per_page,2)
+	}
+	
+}
+function email_details_body_goto()
+{
+	//alert("ok")
+	//alert(document.getElementById("rows_per_page").innerHTML)
+	rows_per_page=parseInt(document.getElementById("rows_per_page").innerHTML)
+	goto_page_no=parseInt(document.getElementById("focusedInput").value) || 0
+	last_page=document.getElementById("last_page").innerHTML
+	if(goto_page_no>parseInt(last_page) || goto_page_no<1){
+	alert("check page range")
+	}
+	else{
+	get_email_details(goto_page_no,rows_per_page,2)
+	}
+	
+}
+function set_email_details_rows_per_page(val)
+{
+document.getElementById("rows_per_page").innerHTML=val
+get_email_details(1,val,2)
+}
+</script>
+ <script>
+function registration_date_body_next()
+{
+	//alert("ok")
+	stpage=document.getElementById("page_number").innerHTML
+	page_no=parseInt(stpage)
+	page_no=page_no+1;
+	rows_per_page=document.getElementById("rows_per_page").innerHTML
+	last_page=document.getElementById("last_page").innerHTML
+	if(page_no>parseInt(last_page) || page_no<1){
+	alert("check page range")
+	}
+	else{
+	get_registration_body(page_no,rows_per_page,2)
+	}
+	
+}
+function registration_date_body_previous()
+{
+	//alert("ok")
+	stpage=document.getElementById("page_number").innerHTML
+	page_no=parseInt(stpage)
+	page_no=page_no-1;
+	rows_per_page=document.getElementById("rows_per_page").innerHTML
+	last_page=document.getElementById("last_page").innerHTML
+	if(page_no>parseInt(last_page) || page_no<1){
+	alert("check page range")
+	}
+	else{
+	get_registration_body(page_no,rows_per_page,2)
+	}
+	
+}
+function registration_date_body_goto()
+{
+	//alert("ok")
+	//alert(document.getElementById("rows_per_page").innerHTML)
+	rows_per_page=parseInt(document.getElementById("rows_per_page").innerHTML)
+	goto_page_no=parseInt(document.getElementById("focusedInput").value) || 0
+	last_page=document.getElementById("last_page").innerHTML
+	if(goto_page_no>parseInt(last_page) || goto_page_no<1){
+	alert("check page range")
+	}
+	else{
+	get_registration_body(goto_page_no,rows_per_page,2)
+	}
+	
+}
+function set_registration_date_rows_per_page(val)
+{
+document.getElementById("rows_per_page").innerHTML=val
+get_registration_body(1,val,2)
+}
+</script>
+<!-- -----------------------------------------------------Script for course enrollment clickable date pagination ends------------------ -->
+</html>

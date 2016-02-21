@@ -1,0 +1,242 @@
+{% load staticfiles %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Course Structure</title>
+
+    <link rel="stylesheet" type="text/css" href="{% static "bootstrap/css/bootstrap.min.css" %}"/>
+    <link rel="stylesheet" type="text/css" href="{% static "font-awesome/css/font-awesome.min.css" %}"/>
+    <link rel="stylesheet" type="text/css" href="{% static "css/local.css" %}"/>
+
+    <script type="text/javascript" src="{% static "js/jquery-1.10.2.min.js" %}"></script>
+    <script type="text/javascript" src="{% static "bootstrap/js/bootstrap.min.js" %}"></script>        
+
+</head>
+
+<body >
+
+    <div id="wrapper">
+        <nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+            
+            <div class="navbar-header">
+                
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-ex1-collapse">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                
+                <a class="navbar-brand" href="{% url 'course' %}">Back to Student</a>
+                 
+            </div>
+            
+            <div class="collapse navbar-collapse navbar-ex1-collapse">
+                
+                <ul class="nav navbar-nav side-nav">
+                
+                    <li> <a href="{% url 'course' %}"> <i class="fa fa-bullseye"> </i> Dashboard </a> </li>
+                    <li class="selected"><a href="{% url 'bootstrap' %}"><i class="fa fa-table"></i >Course Structure</a></li>            
+                </ul>
+                
+                <ul class="nav navbar-nav navbar-right navbar-user">
+                    
+                    <!-- <li class="dropdown messages-dropdown">
+                        
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-envelope"></i> Messages <span class="badge">2</span> <b class="caret"></b></a>
+                        
+                        <ul class="dropdown-menu">
+                        
+                            <li class="dropdown-header">2 New Messages</li>
+                           
+                            <li class="message-preview">
+                                <a href="#">
+                                    <span class="avatar"><i class="fa fa-bell"></i></span>
+                                    <span class="message">Security alert</span>
+                                </a>
+                            </li>
+                           
+                            <li class="divider"></li>
+                            <li class="message-preview">
+                                <a href="#">
+                                    <span class="avatar"><i class="fa fa-bell"></i></span>
+                                    <span class="message">Security alert</span>
+                                </a>
+                            </li>
+                           
+                            <li class="divider"></li>
+                           
+                            <li><a href="#">Go to Inbox <span class="badge">2</span></a></li>
+                        
+                        </ul>
+                    </li> -->
+                    
+                    <li class="dropdown user-dropdown">
+                        
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-user"></i>Student name<b class="caret"></b></a>
+                        <!-- <ul class="dropdown-menu">
+                            <li><a href="#"><i class="fa fa-user"></i> Profile</a></li>
+                            <li><a href="#"><i class="fa fa-gear"></i> Settings</a></li>
+                            <li class="divider"></li>
+                            <li><a href="#"><i class="fa fa-power-off"></i> Log Out</a></li>
+                        </ul> -->
+                    
+                    </li>
+                
+                </ul>
+            </div>
+        </nav>
+
+		<!--	<div id="page-wrapper">            
+				{% for data in course_lst %}
+						<div class="row" onclick="func()">
+									<div class="col-lg-2 text-center">
+										<div class="panel panel-default">
+											<div class="panel-body" style = "background-color:GREEN;" id="d_{{forloop.counter1}}">
+												{{data}}
+											</div>
+										</div>
+									</div>
+						</div>
+				{% endfor %}
+            </div>
+       -->
+       
+       <button id="add" onclick="add_course()">Add</button> <button id="clear" onclick="f()">Clear</button></br></br>
+       <div id='a'> </div>
+       <div id='test'></div>
+      <script>
+		  
+				var url="{% url 'course_data' %}"
+				function add_course(){
+					//alert("called add");
+					var s="";
+					var myDjangoList = (("{{course_lst |safe}}").replace(/&(l|g|quo)t;/g, function(a,b){
+						return {
+							l   : '<',
+							g   : '>',
+							quo : '"'
+						}[b];
+					}));
+
+					myDjangoList = myDjangoList.replace(/u'/g, '\'')
+					myDjangoList = myDjangoList.replace(/'/g, '\"')
+
+					myData = JSON.parse( myDjangoList );
+					for (var prop in myData) {
+						if (myData.hasOwnProperty(prop)) {
+							s=s+"<button id= "+myData[prop]+" onclick='ff(this.id)' class='btn btn-default'>"+myData[prop]+"</button>    ";
+						}
+					}
+					s = s + "</br></br>"
+					document.getElementById('a').innerHTML=s;
+					document.getElementById('test').innerHTML="";
+				}
+					
+				function f()
+				{
+					document.getElementById('a').innerHTML="";
+					document.getElementById('test').innerHTML="";	
+				}	
+				 var myData;
+				function fx(val, course_num){
+					
+					var s=""
+					myData = JSON.parse(val);
+					
+					
+					if(myData.hasOwnProperty(course_num)){
+							
+							for(item in myData[course_num]){
+								s=s+"<p class='btn btn-primary btn-lg' onclick= 'func_chap(this.innerHTML)'>"+myData[course_num][item]+"</p></br></br>";
+								
+								
+							}
+					}
+					
+					document.getElementById('test').innerHTML=s;
+					
+				}	 
+				 
+				function func_chap(data){
+					//alert(data)
+					var s=""
+					if(myData.hasOwnProperty(data)){
+													
+							for( item in myData[data]){
+								s=s+"<p class='btn btn-success' onclick= 'func_sec(this.innerHTML)'>"+myData[data][item]+"</p></br></br>";
+								
+								
+							}
+						}
+					document.getElementById('test').innerHTML=s;	
+				} 
+				
+				function func_sec(data){
+					//alert(data)
+					var s=""
+					if(myData.hasOwnProperty(data)){
+													
+							for( item in myData[data]){
+								s=s+"<p class='btn btn-warning' onclick= 'func_ver(this.innerHTML)'>"+myData[data][item]+"</p></br></br>";
+								
+								
+							}
+						}
+					document.getElementById('test').innerHTML=s;	
+				}  
+				
+				function func_ver(data){
+					//alert(data)
+					var s=""
+					if(myData.hasOwnProperty(data)){
+													
+							for( item in myData[data]){
+								s=s+"<p class='btn btn-info' onclick= ''>"+myData[data][item]+"</p></br></br>";
+								
+								
+							}
+						}
+					document.getElementById('test').innerHTML=s;	
+				}  
+				 
+				function ff(course_num){
+					f();
+					loadXMLDoc(course_num);	
+			    }
+			    function loadXMLDoc(course_num){
+				
+						var xmlhttp;
+						if (window.XMLHttpRequest){
+				
+						   xmlhttp=new XMLHttpRequest();
+						 }
+						else{
+				
+						   xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
+						}
+						
+						xmlhttp.onreadystatechange=function(){
+							
+								if (xmlhttp.readyState==4 && xmlhttp.status==200){
+										fx(xmlhttp.responseText, course_num);//alert("test");alert(xmlhttp.responseText);alert("test");
+								}
+								else
+								{
+									alert("failed1");
+								}
+						  }
+						xmlhttp.open("GET","{% url 'course_data' %}?course_num="+encodeURI(course_num),true);
+						xmlhttp.send();
+				}
+			   
+			    	 
+	  </script>
+	  
+	  
+	  
+       
+</body>
+</html>

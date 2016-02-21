@@ -1,0 +1,13 @@
+from django.conf.urls import url
+
+from . import views
+urlpatterns = [
+	url(r'^index/(?P<facultyid>(.+))$',views.index,name='index'),
+        url(r'^course_unanswered_questions/(?P<facultyid>(.+))$',views.course_unanswered_questions,name='course_unanswered_questions'),
+        url(r'^course_answered_questions/(?P<facultyid>(.+))$',views.course_answered_questions,name='course_answered_questions'),
+        url(r'^course_discussions/(?P<facultyid>(.+))$',views.course_discussions,name='course_discussions'),
+        url(r'^stuofcrs/(.+)/(.+)/(.+)/(.+)/(.+)/(.+)$',views.students_of_course_result_display,name='students_of_course_result_display'),
+	url(r'^stuofcrs/(?P<facultyid>(.+))$',views.students_of_course,name='stuofcrs'),
+        url(r'^course_enrollment_details/(?P<facultyid>(.+))$',views.course_enrollment_details,name='course_enrollment_details')
+
+] 

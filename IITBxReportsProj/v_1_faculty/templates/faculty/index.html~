@@ -1,0 +1,934 @@
+{% load staticfiles %}	
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Faculty Dashboard</title>
+
+    <link rel="stylesheet" type="text/css" href="{% static "bootstrap/css/bootstrap.min.css" %}" />
+    <link rel="stylesheet" type="text/css" href="{% static "font-awesome/css/font-awesome.min.css" %}" />
+    <link rel="stylesheet" type="text/css" href="{% static "css/local.css" %}" />
+
+    <script type="text/javascript" src="{% static "js/jquery-1.10.2.min.js" %}"></script>
+    <script type="text/javascript" src="{% static "bootstrap/js/bootstrap.min.js"%}"></script>
+
+    <!-- you need to include the shieldui css and js assets in order for the charts to work -->
+   
+    <script type="text/javascript" src="http://www.shieldui.com/shared/components/latest/js/shieldui-all.min.js"></script>
+    <script type="text/javascript" src="http://www.prepbootstrap.com/Content/js/gridData.js"></script>
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js"></script>
+<script src="http://code.highcharts.com/highcharts.js"></script>
+
+<script type="text/javascript">
+var course=[];
+var courseavg=[];
+var coursemaxavg=[];
+var d={{data3|safe}};
+for (var i in d) {
+        	course[i]=d[i][0];
+                //alert("course="+course[i]);
+        	courseavg[i]=d[i][2]*100;
+                //alert("courseavg="+courseavg[i]);
+                coursemaxavg[i]=d[i][3]*100;
+            	}
+
+
+$(function () {
+    $('#chart3').highcharts({
+        chart: {
+            type: 'bar'
+        },
+        title: {
+            text: 'Course Grades'
+        },
+        xAxis: {
+            categories: course,
+            title: {
+                text: null
+            }
+        },
+        yAxis: {
+            min: 0,
+            title: {
+                text: 'Grades (%)',
+                align: 'high'
+            },
+            labels: {
+                overflow: 'justify'
+            }
+        },
+        tooltip: {
+            valueSuffix: '%',
+            valueDecimals: 2
+        },
+        plotOptions: {
+            bar: {
+                dataLabels: {
+                    enabled: true
+                }
+            }
+        },
+        legend: {
+            layout: 'vertical',
+            align: 'right',
+            verticalAlign: 'top',
+            x: 0,
+            y: 10,
+            floating: true,
+            borderWidth: 1,
+            backgroundColor: ((Highcharts.theme && Highcharts.theme.legendBackgroundColor) || '#FFFFFF'),
+            shadow: true
+        },
+        credits: {
+            enabled: false
+        },
+        series: [{
+            name: 'Course Average',
+            data: courseavg
+        },
+                 {
+            name: 'Course Max Avg',
+            data: coursemaxavg
+        }]
+    });
+});
+</script>
+<script>
+
+var xdata= [];
+var ydata_discussions = [];
+var ydata_unanswered_questions = [];
+var ydata_answered_questions = [];
+var result = {{data|safe}}
+for ( var obj in result)
+{
+	xdata[obj] =result[obj][0];
+        ydata_discussions[obj] = result[obj][4];
+        ydata_unanswered_questions[obj] = result[obj][3];
+        ydata_answered_questions[obj] = result[obj][2] - ydata_unanswered_questions[obj]; 
+}
+
+$(function () {
+    $('#shieldui-chart1').highcharts({
+	theme: "dark",
+        chart: {
+            height : 500,
+            type: 'bar',
+	    backgroundColor : "#232123"
+        },
+        title: {
+            text: 'Discussion bar chart'
+        },
+        xAxis: {
+            categories: xdata
+        },
+        yAxis: {
+            min: 0,
+            title: {
+                text: 'Discussion Forum'
+            },
+            stackLabels: {
+                enabled: true,
+                style: {
+                    fontWeight: 'bold',
+                    color: (Highcharts.theme && Highcharts.theme.textColor) || 'gray'
+                }
+            }
+          
+        },
+       
+        legend: {
+            reversed: true
+        },
+        plotOptions: {
+            series: {
+                stacking: 'normal'
+            }
+        },
+        series: [{
+            name: 'Discussions',
+            data: ydata_discussions
+        }, {
+            name: 'Answered Questions',
+            data: ydata_answered_questions
+        }, {
+            name: 'Unanswered Questions',
+            data: ydata_unanswered_questions
+        }]
+    });
+});
+/**
+ * Dark theme for Highcharts JS
+ * @author Torstein Honsi
+ */
+
+// Load the fonts
+Highcharts.createElement('link', {
+   href: '//fonts.googleapis.com/css?family=Unica+One',
+   rel: 'stylesheet',
+   type: 'text/css'
+}, null, document.getElementsByTagName('head')[0]);
+
+Highcharts.theme = {
+   colors: ["#2b908f", "#90ee7e", "#f45b5b", "#7798BF", "#aaeeee", "#ff0066", "#eeaaee",
+      "#55BF3B", "#DF5353", "#7798BF", "#aaeeee"],
+   chart: {
+      backgroundColor: {
+         linearGradient: { x1: 0, y1: 0, x2: 1, y2: 1 },
+         stops: [
+            [0, '#2a2a2b'],
+            [1, '#3e3e40']
+         ]
+      },
+      style: {
+         fontFamily: "'Unica One', sans-serif"
+      },
+      plotBorderColor: '#606063'
+   },
+   title: {
+      style: {
+         color: '#E0E0E3',
+         textTransform: 'uppercase',
+         fontSize: '20px'
+      }
+   },
+   subtitle: {
+      style: {
+         color: '#E0E0E3',
+         textTransform: 'uppercase'
+      }
+   },
+   xAxis: {
+      gridLineColor: '#707073',
+      labels: {
+         style: {
+            color: '#E0E0E3'
+         }
+      },
+      lineColor: '#707073',
+      minorGridLineColor: '#505053',
+      tickColor: '#707073',
+      title: {
+         style: {
+            color: '#A0A0A3'
+
+         }
+      }
+   },
+   yAxis: {
+      gridLineColor: '#707073',
+      labels: {
+         style: {
+            color: '#E0E0E3'
+         }
+      },
+      lineColor: '#707073',
+      minorGridLineColor: '#505053',
+      tickColor: '#707073',
+      tickWidth: 1,
+      title: {
+         style: {
+            color: '#A0A0A3'
+         }
+      }
+   },
+   tooltip: {
+      backgroundColor: 'rgba(0, 0, 0, 0.85)',
+      style: {
+         color: '#F0F0F0'
+      }
+   },
+   plotOptions: {
+      series: {
+         dataLabels: {
+            color: '#B0B0B3'
+         },
+         marker: {
+            lineColor: '#333'
+         }
+      },
+      boxplot: {
+         fillColor: '#505053'
+      },
+      candlestick: {
+         lineColor: 'white'
+      },
+      errorbar: {
+         color: 'white'
+      }
+   },
+   legend: {
+      itemStyle: {
+         color: '#E0E0E3'
+      },
+      itemHoverStyle: {
+         color: '#FFF'
+      },
+      itemHiddenStyle: {
+         color: '#606063'
+      }
+   },
+   credits: {
+      style: {
+         color: '#666'
+      }
+   },
+   labels: {
+      style: {
+         color: '#707073'
+      }
+   },
+
+   drilldown: {
+      activeAxisLabelStyle: {
+         color: '#F0F0F3'
+      },
+      activeDataLabelStyle: {
+         color: '#F0F0F3'
+      }
+   },
+
+   navigation: {
+      buttonOptions: {
+         symbolStroke: '#DDDDDD',
+         theme: {
+            fill: '#505053'
+         }
+      }
+   },
+
+   // scroll charts
+   rangeSelector: {
+      buttonTheme: {
+         fill: '#505053',
+         stroke: '#000000',
+         style: {
+            color: '#CCC'
+         },
+         states: {
+            hover: {
+               fill: '#707073',
+               stroke: '#000000',
+               style: {
+                  color: 'white'
+               }
+            },
+            select: {
+               fill: '#000003',
+               stroke: '#000000',
+               style: {
+                  color: 'white'
+               }
+            }
+         }
+      },
+      inputBoxBorderColor: '#505053',
+      inputStyle: {
+         backgroundColor: '#333',
+         color: 'silver'
+      },
+      labelStyle: {
+         color: 'silver'
+      }
+   },
+
+   navigator: {
+      handles: {
+         backgroundColor: '#666',
+         borderColor: '#AAA'
+      },
+      outlineColor: '#CCC',
+      maskFill: 'rgba(255,255,255,0.1)',
+      series: {
+         color: '#7798BF',
+         lineColor: '#A6C7ED'
+      },
+      xAxis: {
+         gridLineColor: '#505053'
+      }
+   },
+
+   scrollbar: {
+      barBackgroundColor: '#808083',
+      barBorderColor: '#808083',
+      buttonArrowColor: '#CCC',
+      buttonBackgroundColor: '#606063',
+      buttonBorderColor: '#606063',
+      rifleColor: '#FFF',
+      trackBackgroundColor: '#404043',
+      trackBorderColor: '#404043'
+   },
+
+   // special colors for some of the
+   legendBackgroundColor: 'rgba(0, 0, 0, 0.5)',
+   background2: '#505053',
+   dataLabelsColor: '#B0B0B3',
+   textColor: '#C0C0C0',
+   contrastTextColor: '#F0F0F3',
+   maskColor: 'rgba(255,255,255,0.3)'
+};
+
+// Apply the theme
+Highcharts.setOptions(Highcharts.theme);
+</script>
+
+<script>
+var xdata=[];
+var ydata=[];
+var data={{data2|safe }};
+for (var prop in data) {
+        //alert("Key:" + data[prop].course_id);
+		xdata[prop]=data[prop].course_id;
+        //alert("Value:" + data[prop].no_of_students);
+		ydata[prop]=data[prop].no_of_students;
+			}
+$(function () {
+    $('#shieldui-chart2').highcharts({
+       
+       chart: {
+       backgroundColor : "#232123",
+       },
+        title: {
+            text: 'No of students per course',
+            x: 0 
+        },
+        xAxis: {
+            categories: xdata,
+
+        },
+        yAxis: {
+            title: {
+                text: 'students'
+            }, 
+            plotLines: [{
+                value: 0,
+                width: 1,
+                color: '#808080'
+            }],
+	
+
+             
+        },
+        tooltip: {
+            valueSuffix: ''
+        },
+        legend: {
+            layout: 'vertical',
+            align: 'right',
+            verticalAlign: 'middle',
+            borderWidth: 0
+        },
+        series: [{
+    	    type:'column',
+            name: 'students strength',
+            data: ydata,
+            
+            
+        }]
+    });
+});
+</script>
+</head>
+<body>
+
+    <div id="wrapper" >
+
+          <nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-ex1-collapse">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="">Faculty Panel</a>
+            </div>
+
+            <div class="collapse navbar-collapse navbar-ex1-collapse">
+               <ul id="active" class="nav navbar-nav side-nav">
+                    <li class="selected"><a href="{% url 'index' facultyid=fid %}"><i class="fa fa-globe"></i> Summary</a></li>
+                     <li class="dropdown"><a class="dropdown-toggle" data-toggle="dropdown">
+                     <i class="fa fa-tasks"></i> Course Enrollment Report<span class="caret"></span></a>
+				<ul class="dropdown-menu">
+					<li><a href="{% url 'stuofcrs' facultyid=fid %}">List of Students per course</a></li></ul></li>
+                    <li><a href=""><i class="fa fa-list-ol"></i> Grading Reports</a></li>
+                   
+             	     <li class="dropdown"><a class="dropdown-toggle" data-toggle="dropdown">
+		     <i class="fa fa-font"></i> Discussion Activity Report <span class="caret"></span></a>
+				<ul class="dropdown-menu">
+					<li><a href="{% url 'course_unanswered_questions' facultyid=fid %}">List of Unanswered Questions</a></li>
+					<li><a href="{% url 'course_discussions' facultyid=fid %}">List of Discussions</a></li>
+					<li><a href="{% url 'course_answered_questions' facultyid=fid %}">List of Answered Questions</a></li>
+				</ul>
+		     </li>
+                </ul>
+
+                <ul class="nav navbar-nav navbar-right navbar-user">
+                   <!-- <li class="dropdown messages-dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-envelope"></i> Messages <span class="badge">2</span> <b class="caret"></b></a>
+                        <ul class="dropdown-menu">
+                            <li class="dropdown-header">2 New Messages</li>
+                            <li class="message-preview">
+                                <a href="#">
+                                    <span class="avatar"><i class="fa fa-bell"></i></span>
+                                    <span class="message">Security alert</span>
+                                </a>
+                            </li>
+                            <li class="divider"></li>
+                            <li class="message-preview">
+                                <a href="#">
+                                    <span class="avatar"><i class="fa fa-bell"></i></span>
+                                    <span class="message">Security alert</span>
+                                </a>
+                            </li>
+                            <li class="divider"></li>
+                            <li><a href="#">Go to Inbox <span class="badge">2</span></a></li>
+                        </ul>
+                    </li> -->
+                    <li class="dropdown user-dropdown">
+                        <a href="{% url 'getout' %}" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-user"></i> Avinash Awate <b class="caret"></b></a>
+                        <ul class="dropdown-menu">
+                            <li><a href="#"><i class="fa fa-user"></i> Profile</a></li>
+                            <li><a href="#"><i class="fa fa-gear"></i> Settings</a></li>
+                            <li class="divider"></li>
+                            <li><a href="#"><i class="fa fa-power-off"></i> Log Out</a></li>
+
+                        </ul>
+                    </li>
+                    <li class="divider-vertical"></li>
+                  <!--  <li>
+                        <form class="navbar-search">
+                            <input type="text" placeholder="Search" class="form-control">
+                        </form>
+                    </li> -->
+                </ul>
+            </div>
+        </nav>
+
+        <div id="page-wrapper">
+
+            <div class="row">
+                <div class="col-lg-12">
+                    <h1>Summary <small>Statistics</small></h1>
+                     <!--<div class="alert alert-dismissable alert-warning">
+                        <button data-dismiss="alert" class="close" type="button">×</button>
+                        <h4>Warning!</h4>
+                        <p>You have two new messages.
+                            </p>
+                    </div> -->
+                </div>
+            </div>
+	    <br>
+	<div class="row">
+
+                <div class="col-md-12" >
+                    <div class="panel panel-primary">
+                        <div class="panel-heading">
+                            <h3 class="panel-title"><i class="fa fa-bar-chart-o"></i>  Faculty Course Grades</h3>
+                        </div>
+                        <div class="panel-body">
+                            <div id="chart3"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+
+                <div class="col-md-12" >
+                    <div class="panel panel-primary">
+                        <div class="panel-heading">
+                            <h3 class="panel-title"><i class="fa fa-bar-chart-o"></i>  Courses of Faculty</h3>
+                        </div>
+                        <div class="panel-body">
+                            <div id="shieldui-chart2"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+                  <div class="row">             
+		        <div class="col-md-12" >
+		            <div class="panel panel-primary">
+		                <div class="panel-heading">
+		                    <h3 class="panel-title"><i class="fa fa-bar-chart-o"></i> Discussion Forum Activity</h3>
+		                </div>
+		                <div class="panel-body" style='overflow-y:scroll;height:400px; '>
+		                    <div id="shieldui-chart1"></div>
+		                </div>
+		            </div>
+		        </div>
+            </div>
+
+                <!--<div class="col-md-4">
+                    <div class="panel panel-primary">
+                        <div class="panel-heading">
+                            <h3 class="panel-title"><i class="fa fa-rss"></i> Feed</h3>
+                        </div>
+                        <div class="panel-body feed">
+                            <section class="feed-item">
+                                <div class="icon pull-left">
+                                    <i class="fa fa-comment"></i>
+                                </div>
+                                <div class="feed-item-body">
+                                    <div class="text">
+                                        <a href="#">John Doe</a> commented on <a href="#">What Makes Good Code Good</a>.
+                                    </div>
+                                    <div class="time pull-left">
+                                        3 h
+                                    </div>
+                                </div>
+                            </section>
+                            <section class="feed-item">
+                                <div class="icon pull-left">
+                                    <i class="fa fa-check"></i>
+                                </div>
+                                <div class="feed-item-body">
+                                    <div class="text">
+                                        <a href="#">Merge request #42</a> has been approved by <a href="#">Jessica Lori</a>.
+                                    </div>
+                                    <div class="time pull-left">
+                                        10 h
+                                    </div>
+                                </div>
+                            </section>
+                            <section class="feed-item">
+                                <div class="icon pull-left">
+                                    <i class="fa fa-plus-square-o"></i>
+                                </div>
+                                <div class="feed-item-body">
+                                    <div class="text">
+                                        New user <a href="#">Greg Wilson</a> registered.
+                                    </div>
+                                    <div class="time pull-left">
+                                        Today
+                                    </div>
+                                </div>
+                            </section>
+                            <section class="feed-item">
+                                <div class="icon pull-left">
+                                    <i class="fa fa-bolt"></i>
+                                </div>
+                                <div class="feed-item-body">
+                                    <div class="text">
+                                        Server fail level raises above normal. <a href="#">See logs</a> for details.
+                                    </div>
+                                    <div class="time pull-left">
+                                        Yesterday
+                                    </div>
+                                </div>
+                            </section>
+                            <section class="feed-item">
+                                <div class="icon pull-left">
+                                    <i class="fa fa-archive"></i>
+                                </div>
+                                <div class="feed-item-body">
+                                    <div class="text">
+                                        <a href="#">Database usage report</a> is ready.
+                                    </div>
+                                    <div class="time pull-left">
+                                        Yesterday
+                                    </div>
+                                </div>
+                            </section>
+                            <section class="feed-item">
+                                <div class="icon pull-left">
+                                    <i class="fa fa-shopping-cart"></i>
+                                </div>
+                                <div class="feed-item-body">
+                                    <div class="text">
+                                        <a href="#">Order #233985</a> needs additional processing.
+                                    </div>
+                                    <div class="time pull-left">
+                                        Wednesday
+                                    </div>
+                                </div>
+                            </section>
+                            <section class="feed-item">
+                                <div class="icon pull-left">
+                                    <i class="fa fa-arrow-down"></i>
+                                </div>
+                                <div class="feed-item-body">
+                                    <div class="text">
+                                        <a href="#">Load more...</a>
+                                    </div>
+                                </div>
+                            </section>
+                        </div>
+                    </div> -->
+                
+            </div>
+          <!--  <div class="row">
+                <div class="col-lg-12">
+                    <div class="panel panel-primary">
+                       <!-- <div class="panel-heading">
+                            <h3 class="panel-title"><i class="fa fa-bar-chart-o"></i> Traffic Sources One month tracking </h3>
+                        </div>
+                        <div class="panel-body">
+                            <div id="shieldui-grid1"></div>
+                        </div> 
+                    </div>
+                </div>
+            </div> -->
+            <div class="row">
+               <!-- <div class="col-lg-4">
+                    <div class="panel panel-primary">
+                        <div class="panel-heading">
+                            <h3 class="panel-title"><i class="fa fa-bar-chart-o"></i> Logins per week</h3>
+                        </div>
+                        <div class="panel-body">
+                            <div id="shieldui-chart2"></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-4">
+                    <div class="panel panel-primary">
+                        <div class="panel-heading">
+                            <h3 class="panel-title"><i class="fa fa-magnet"></i> Server Overview</h3>
+                        </div>
+                        <div class="panel-body">
+                            <ul class="server-stats">
+                                <li>
+                                    <div class="key pull-right">CPU</div>
+                                    <div class="stat">
+                                        <div class="info">60% / 37°C / 3.3 Ghz</div>
+                                        <div class="progress progress-small">
+                                            <div style="width: 70%;" class="progress-bar progress-bar-danger"></div>
+                                        </div>
+                                    </div>
+                                </li>
+                                <li>
+                                    <div class="key pull-right">Mem</div>
+                                    <div class="stat">
+                                        <div class="info">29% / 4GB (16 GB)</div>
+                                        <div class="progress progress-small">
+                                            <div style="width: 29%;" class="progress-bar"></div>
+                                        </div>
+                                    </div>
+                                </li>
+                                <li>
+                                    <div class="key pull-right">LAN</div>
+                                    <div class="stat">
+                                        <div class="info">6 Mb/s <i class="fa fa-caret-down"></i>&nbsp; 3 Mb/s <i class="fa fa-caret-up"></i></div>
+                                        <div class="progress progress-small">
+                                            <div style="width: 48%;" class="progress-bar progress-bar-inverse"></div>
+                                        </div>
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+
+                </div>
+                <div class="col-lg-4">
+
+                    <header>
+                        <ul class="nav nav-tabs">
+                            <li class="active">
+                                <a data-toggle="tab" href="#stats">Users</a>
+                            </li>
+                            <li class="">
+                                <a data-toggle="tab" href="#report">Favorites</a>
+                            </li>
+                            <li class="">
+                                <a data-toggle="tab" href="#dropdown1">Commenters</a>
+                            </li>
+                        </ul>
+                    </header>
+                    <div class="body tab-content">
+                        <div class="tab-pane clearfix active" id="stats">
+                            <h5 class="tab-header"><i class="fa fa-calendar-o fa-2x"></i> Last logged-in users</h5>
+                            <ul class="news-list">
+                                <li>
+                                    <i class="fa fa-user fa-4x pull-left"></i>
+                                    <div class="news-item-info">
+                                        <div class="name"><a href="#">Ivan Gorge</a></div>
+                                        <div class="position">Software Engineer</div>
+                                        <div class="time">Last logged-in: Mar 12, 11:11</div>
+                                    </div>
+                                </li>
+                                <li>
+                                    <i class="fa fa-user fa-4x pull-left"></i>
+                                    <div class="news-item-info">
+                                        <div class="name"><a href="#">Roman Novak</a></div>
+                                        <div class="position">Product Designer</div>
+                                        <div class="time">Last logged-in: Mar 12, 19:02</div>
+                                    </div>
+                                </li>
+                                <li>
+                                    <i class="fa fa-user fa-4x pull-left"></i>
+                                    <div class="news-item-info">
+                                        <div class="name"><a href="#">Teras Uotul</a></div>
+                                        <div class="position">Chief Officer</div>
+                                        <div class="time">Last logged-in: Jun 16, 2:34</div>
+                                    </div>
+                                </li>
+                                <li>
+                                    <i class="fa fa-user fa-4x pull-left"></i>
+                                    <div class="news-item-info">
+                                        <div class="name"><a href="#">Deral Ferad</a></div>
+                                        <div class="position">Financial Assistant</div>
+                                        <div class="time">Last logged-in: Jun 18, 4:20</div>
+                                    </div>
+                                </li>
+                                <li>
+                                    <i class="fa fa-user fa-4x pull-left"></i>
+                                    <div class="news-item-info">
+                                        <div class="name"><a href="#">Konrad Polerd</a></div>
+                                        <div class="position">Sales Manager</div>
+                                        <div class="time">Last logged-in: Jun 18, 5:13</div>
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="tab-pane" id="report">
+                            <h5 class="tab-header"><i class="fa fa-star fa-2x"></i> Popular contacts</h5>
+                            <ul class="news-list news-list-no-hover">
+                                <li>
+                                    <i class="fa fa-user fa-4x pull-left"></i>
+                                    <div class="news-item-info">
+                                        <div class="name"><a href="#">Pol Johnsson</a></div>
+                                        <div class="options">
+                                            <button class="btn btn-xs btn-success">
+                                                <i class="fa fa-phone"></i>
+                                                Call
+                                            </button>
+                                            <button class="btn btn-xs btn-warning">
+                                                <i class="fa fa-envelope-o"></i>
+                                                Message
+                                            </button>
+                                        </div>
+                                    </div>
+                                </li>
+                                <li>
+                                    <i class="fa fa-user fa-4x pull-left"></i>
+                                    <div class="news-item-info">
+                                        <div class="name"><a href="#">Terry Garel</a></div>
+                                        <div class="options">
+                                            <button class="btn btn-xs btn-success">
+                                                <i class="fa fa-phone"></i>
+                                                Call
+                                            </button>
+                                            <button class="btn btn-xs btn-warning">
+                                                <i class="fa fa-envelope-o"></i>
+                                                Message
+                                            </button>
+                                        </div>
+                                    </div>
+                                </li>
+                                <li>
+                                    <i class="fa fa-user fa-4x pull-left"></i>
+                                    <div class="news-item-info">
+                                        <div class="name"><a href="#">Eruos Forkal</a></div>
+                                        <div class="options">
+                                            <button class="btn btn-xs btn-success">
+                                                <i class="fa fa-phone"></i>
+                                                Call
+                                            </button>
+                                            <button class="btn btn-xs btn-warning">
+                                                <i class="fa fa-envelope-o"></i>
+                                                Message
+                                            </button>
+                                        </div>
+                                    </div>
+                                </li>
+                                <li>
+                                    <i class="fa fa-user fa-4x pull-left"></i>
+                                    <div class="news-item-info">
+                                        <div class="name"><a href="#">Remus Reier</a></div>
+                                        <div class="options">
+                                            <button class="btn btn-xs btn-success">
+                                                <i class="fa fa-phone"></i>
+                                                Call
+                                            </button>
+                                            <button class="btn btn-xs btn-warning">
+                                                <i class="fa fa-envelope-o"></i>
+                                                Message
+                                            </button>
+                                        </div>
+                                    </div>
+                                </li>
+                                <li>
+                                    <i class="fa fa-user fa-4x pull-left"></i>
+                                    <div class="news-item-info">
+                                        <div class="name"><a href="#">Lover Lund</a></div>
+                                        <div class="options">
+                                            <button class="btn btn-xs btn-success">
+                                                <i class="fa fa-phone"></i>
+                                                Call
+                                            </button>
+                                            <button class="btn btn-xs btn-warning">
+                                                <i class="fa fa-envelope-o"></i>
+                                                Message
+                                            </button>
+                                        </div>
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="tab-pane" id="dropdown1">
+                            <h5 class="tab-header"><i class="fa fa-comments fa-2x"></i> Top Commenters</h5>
+                            <ul class="news-list">
+                                <li>
+                                    <i class="fa fa-user fa-4x pull-left"></i>
+                                    <div class="news-item-info">
+                                        <div class="name"><a href="#">Edin Garey</a></div>
+                                        <div class="comment">
+                                            Nemo enim ipsam voluptatem quia voluptas sit aspernatur 
+                                            aut odit aut fugit,sed quia
+                                        </div>
+                                    </div>
+                                </li>
+                                <li>
+                                    <i class="fa fa-user fa-4x pull-left"></i>
+                                    <div class="news-item-info">
+                                        <div class="name"><a href="#">Firel Lund</a></div>
+                                        <div class="comment">
+                                            Duis aute irure dolor in reprehenderit in voluptate velit
+                                             esse cillum dolore eu fugiat.
+                                        </div>
+                                    </div>
+                                </li>
+                                <li>
+                                    <i class="fa fa-user fa-4x pull-left"></i>
+                                    <div class="news-item-info">
+                                        <div class="name"><a href="#">Jessica Desingter</a></div>
+                                        <div class="comment">
+                                            Excepteur sint occaecat cupidatat non proident, sunt in
+                                             culpa qui officia deserunt.
+                                        </div>
+                                    </div>
+                                </li>
+                                <li>
+                                    <i class="fa fa-user fa-4x pull-left"></i>
+                                    <div class="news-item-info">
+                                        <div class="name"><a href="#">Novel Forel</a></div>
+                                        <div class="comment">
+                                            Sed ut perspiciatis, unde omnis iste natus error sit voluptatem accusantium doloremque.
+                                        </div>
+                                    </div>
+                                </li>
+                                <li>
+                                    <i class="fa fa-user fa-4x pull-left"></i>
+                                    <div class="news-item-info">
+                                        <div class="name"><a href="#">Wedol Reier</a></div>
+                                        <div class="comment">
+                                            Laudantium, totam rem aperiam eaque ipsa, quae ab illo inventore veritatis
+                                            et quasi.
+                                        </div>
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+
+                </div> -->
+            </div> 
+        </div>
+
+    </div>
+    <!-- /#wrapper -->
+   
+</body>
+</html>

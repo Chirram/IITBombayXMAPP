@@ -1,0 +1,140 @@
+# IMPORTING DEPENDENCIES
+
+from django.shortcuts import render
+from django.shortcuts import render_to_response
+from django.template import RequestContext,loader
+from django.http import HttpResponse
+import json
+from inputs import DatabaseConfig
+import MySQLdb
+
+
+#IMPORTING CUSTOM APIS
+from .apis.dashboard_report import get_organization_registrations 
+from .apis.organization_grilldown_report import get_organizationwise_course_enrollments
+from .apis.organization_list_report import get_organization_list
+from .apis.certificate_summary_report import get_certificate_count
+
+
+
+#-----------------------------------------------------------------------------------------------------------------
+# PARENT METHOD FOR SUMMARY TAB
+def index(request) :
+	#print get_organization_registrations_report() 
+	
+	return render_to_response('ceopanel/index.html',{'data':json.dumps(get_organization_registrations()) })
+
+#---------------------------------------------------------------------------------------------------------------------
+
+
+#-----------------------------------------------------------------------------------------------------------------
+# PARENT METHOD FOR ORGANIZATION COURSE ENROLLMENT TAB
+def organizationwise_courses_enrollment(request) :
+	organizations= get_organization_list()
+	print organizations
+	
+	#print orgid +" hello"
+	return render_to_response('ceopanel/organizationwise_course_enrollment.html',{'data':json.dumps(get_organizationwise_course_enrollments(request.GET.get['orgid'])) ,'organization_list' : organizations,'org_id' : json.dumps(request.GET.get['orgid']),'org' :request.GET.get['orgid'] })
+
+#---------------------------------------------------------------------------------------------------------------------
+
+
+
+
+
+#-----------------------------------------------------------------------------------------------------------------
+# PARENT METHOD FOR SUMMARY TAB
+def institute_wise(request) :
+	return render_to_response('ceopanel/institutewise_certificates_index.html',{'data':get_institutewise_cerificates_report() })
+def course_wise(request) :
+	InstituteId=str(request.GET.get("InstituteId"))
+	return render_to_response('ceopanel/coursewise_certificates.html',{'data':get_coursewise_cerificates_report(str(InstituteId)) })
+
+#---------------------------------------------------------------------------------------------------------------------
+
+def get_institutewise_cerificates_report():
+	#try:
+	db = MySQLdb.connect(DatabaseConfig.MYSQL_HOST,DatabaseConfig.MYSQL_USER,DatabaseConfig.MYSQL_PWD,DatabaseConfig.MYSQL_DB )
+
+	cursor = db.cursor()
+	#cursor.execute("select org_id,sum(no_of_verified_certi) verified from (select count(*) no_of_verified_certi,course_id from certificates_generatedcertificate where mode='verified' group by course_id ) a join (select org_id from courseware_organization) b where a.course_id like concat(b.org_id,'%') group by org_id;")
+	cursor.execute("select b.org_id,sum(a.no_of_verified_certi) verified from (select count(*) no_of_verified_certi,course_id,substring_index(course_id,'/',1) course from certificates_generatedcertificate where mode='verified' group by course_id ) a join (select org_id from courseware_organization) b where a.course = b.org_id collate utf8_general_ci group by b.org_id;")
+	verified=cursor.fetchall()
+	#cursor.execute("select org_id,sum(no_of_honor_certi) honor from (select count(*) no_of_honor_certi,course_id from certificates_generatedcertificate where mode='honor' group by course_id ) a join (select org_id from courseware_organization) b where a.course_id like concat(b.org_id,'%') group by org_id;")
+	cursor.execute("select b.org_id,sum(a.no_of_honor_certi) verified from (select count(*) no_of_honor_certi,course_id,substring_index(course_id,'/',1) course from certificates_generatedcertificate where mode='honor' group by course_id ) a join (select org_id from courseware_organization) b where a.course = b.org_id collate utf8_general_ci group by b.org_id;")
+	honor=cursor.fetchall()
+	cursor.execute("select org_id from courseware_organization;")
+	all_institutes=cursor.fetchall()
+	institutes_list=[]
+	for institute in all_institutes:
+		institutes_list.append(institute[0])
+	honor=dict(honor)
+	verified=dict(verified)
+	#except:
+	#	print "Unable to execute the query"
+	institutes=[]
+	honor_list=[]
+	verified_list=[]
+	for key in institutes_list:
+		institutes.append(key)
+		if key in honor.keys():
+			honor_list.append(int(honor[key]))
+		else:
+			honor_list.append(0)
+		if key in verified.keys():
+			verified_list.append(int(verified[key]))
+		else:
+			verified_list.append(0)
+	total_list=[institutes,honor_list,verified_list]
+	print total_list
+	return total_list
+
+
+
+
+
+def get_coursewise_cerificates_report(institute_id):
+	try:
+		db = MySQLdb.connect(DatabaseConfig.MYSQL_HOST,DatabaseConfig.MYSQL_USER,DatabaseConfig.MYSQL_PWD,DatabaseConfig.MYSQL_DB )
+
+		cursor = db.cursor()
+		cursor.execute("select course_id,count(*) no_of_verified_certi from certificates_generatedcertificate where mode='verified' and  course_id like '"+institute_id+"%' group by course_id;")
+		verified=cursor.fetchall()
+		cursor.execute("select course_id,count(*) no_of_honor_certi from certificates_generatedcertificate where mode='honor' and  course_id like '"+institute_id+"%' group by course_id;")
+		honor=cursor.fetchall()
+		cursor.execute("select course_id from certificates_generatedcertificate where course_id like '"+institute_id+"%' group by course_id;")
+		all_courses=cursor.fetchall()
+		courses_list=[]
+		for course in all_courses:
+			courses_list.append(course[0])
+	except:
+		print "Unable to execute the query"
+	courses=[]
+	honor_list=[]
+	verified_list=[]
+	honor=dict(honor)
+	verified=dict(verified)
+	for key in courses_list:
+		courses.append(key[len(institute_id)+1:])
+		if key in honor.keys():
+			honor_list.append(int(honor[key]))
+		else:
+			honor_list.append(0)
+		if key in verified.keys():
+			verified_list.append(int(verified[key]))
+		else:
+			verified_list.append(0)
+	total_list=[institute_id,courses,honor_list,verified_list]
+	return total_list
+
+
+	
+
+
+
+
+
+
+
+
+

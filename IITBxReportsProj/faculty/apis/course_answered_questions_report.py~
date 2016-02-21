@@ -1,0 +1,32 @@
+# IMPORTING LIBRARIES
+from inputs import DatabaseConfig
+import pymongo
+import MySQLdb
+from pymongo import MongoClient
+
+# ESTABLISHING CONNECTION WITH DATABASE
+
+client = MongoClient(DatabaseConfig.MONGO_HOST, DatabaseConfig.MONGO_PORT)
+
+# SELECTING DATABASE
+discussion_db = client.cs_comments_service_development
+discussion_coll = discussion_db.contents
+
+def get_answered_questions_report(facultyid,courseid) :
+
+	try:    
+		result=[]
+		discussion_db = client.cs_comments_service_development
+		discussion_coll = discussion_db.contents
+		ans_ques = discussion_coll.find({"_type" : "CommentThread" , "thread_type" : "question" ,"course_id" : courseid, "comment_count" : "{$gt : 0 }"} , {"body" : 1,"title" : 1})
+		for i in ans_ques:
+			result.append([i['title'],i['body']])
+		client.close()
+		return result
+	except:
+		print "Unable to execute query : answered questions"
+	
+
+	
+
+
